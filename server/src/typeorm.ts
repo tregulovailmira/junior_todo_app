@@ -8,7 +8,13 @@ async function connect(): Promise<Connection> {
         username: process.env.TYPEORM_USERNAME,
         password: process.env.TYPEORM_PASSWORD,
         database: process.env.TYPEORM_DATABASE,
-        entities: [__dirname + '/entity/*.ts']
+        cli: {
+            migrationsDir: [__dirname + process.env.TYPEORM_MIGRATIONS_DIR],
+            entitiesDir: [__dirname + process.env.TYPEORM_ENTITIES_DIR]
+        },
+
+        entities: [__dirname + process.env.TYPEORM_ENTITIES],
+        migrations: [__dirname + process.env.TYPEORM_MIGRATIONS],
     });
 
     const connection: Connection = await createConnection(todo_db);

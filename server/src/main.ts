@@ -2,7 +2,6 @@ import "reflect-metadata";
 require('dotenv').config();
 import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
-import { getConnectionOptions, createConnection } from "typeorm";
 import { AppModule } from './app.module';
 import { connect } from './typeorm';
 
