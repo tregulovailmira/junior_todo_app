@@ -9,7 +9,9 @@ export class Todo1621195574315 implements MigrationInterface {
                 {
                     name: "id",
                     type: "int",
-                    isPrimary: true
+                    isPrimary: true,
+                    isGenerated: true,
+                    generationStrategy: 'increment',
                 },
                 {
                     name: "header",
