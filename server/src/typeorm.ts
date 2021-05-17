@@ -1,4 +1,8 @@
 import { Connection, createConnection } from 'typeorm';
+import { User } from './entity/User';
+import { Role } from './entity/Role';
+import { Todo } from './entity/Todo';
+import { Attachment } from './entity/Attachment';
 
 async function connect(): Promise<Connection> {
     const todo_db = Object.assign({
@@ -13,7 +17,7 @@ async function connect(): Promise<Connection> {
             entitiesDir: [__dirname + process.env.TYPEORM_ENTITIES_DIR]
         },
 
-        entities: [__dirname + process.env.TYPEORM_ENTITIES],
+        entities: [User, Role, Todo, Attachment],
         migrations: [__dirname + process.env.TYPEORM_MIGRATIONS],
     });
 
