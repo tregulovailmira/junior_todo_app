@@ -1,19 +1,25 @@
-import { Controller, Post, Get, Patch, Delete, Body, Param, HttpCode, Query, HttpException } from '@nestjs/common';
+import { Req, Controller, Post, Get, Patch, Delete, Body, Param, HttpCode, Query, HttpException } from '@nestjs/common';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { User } from '../../entity/User';
 import { Role } from '../../entity/Role';
 import { UsersService } from './users.service';
 import { CreateUserDto, ListAllUsersDto } from './dto';
+import { HashPassword } from './users.decorator';
 
 @Controller('users')
 export class UsersController {
 
     @Post()
-    async create(@Body() data: CreateUserDto): Promise<object> {
-        const { name, email, password, roleId } = data;
-            const userRepository = getCustomRepository(UsersService);
-            const user = await userRepository.createAndSave(name, email, password, roleId);
-            return user;
+    async create(
+        @Req() req,
+        @Body() data: CreateUserDto,
+        @HashPassword() hashPassword: string,
+    ): Promise<object> {
+        const { name, email, roleId } = data;
+
+        const userRepository = getCustomRepository(UsersService);
+        const user = await userRepository.createAndSave(name, email, hashPassword, roleId);
+        return user;
     }
 
     @Get()
