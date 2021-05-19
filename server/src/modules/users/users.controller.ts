@@ -1,66 +1,88 @@
-import { Req, Controller, Post, Get, Patch, Delete, Body, Param, HttpCode, Query, HttpException } from '@nestjs/common';
+import {
+  Req,
+  Controller,
+  Post,
+  Get,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  HttpCode,
+  Query,
+  HttpException,
+} from '@nestjs/common';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { User } from '../../entity/User';
 import { Role } from '../../entity/Role';
 import { UsersService } from './users.service';
 import { CreateUserDto, ListAllUsersDto } from './dto';
 import { HashPassword } from './users.decorator';
+import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { UserResponse } from './user.response';
 
 @Controller('users')
 export class UsersController {
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Post()
+  async create(
+    @Req() req,
+    @Body() data: CreateUserDto,
+    @HashPassword() hashPassword: string,
+  ): Promise<UserResponse> {
+    const { name, email, roleId } = data;
 
-    @Post()
-    async create(
-        @Req() req,
-        @Body() data: CreateUserDto,
-        @HashPassword() hashPassword: string,
-    ): Promise<object> {
-        const { name, email, roleId } = data;
+    const userRepository = getCustomRepository(UsersService);
+    const user = await userRepository.createAndSave(
+      name,
+      email,
+      hashPassword,
+      roleId,
+    );
+    return new UserResponse(user);
+  }
 
-        const userRepository = getCustomRepository(UsersService);
-        const user = await userRepository.createAndSave(name, email, hashPassword, roleId);
-        return user;
-    }
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get()
+  async findAll(@Query() query: ListAllUsersDto): Promise<UserResponse[]> {
+    const { limit, offset } = query;
+    const userRepository = getCustomRepository(UsersService);
+    const allUsers = await userRepository.findMany(limit, offset);
+    return allUsers.map((user) => new UserResponse(user));
+  }
 
-    @Get()
-    async findAll(@Query() query: ListAllUsersDto): Promise<object[]> {
-        const { limit, offset } = query;
-        const userRepository = getCustomRepository(UsersService);
-        const allUsers = await userRepository.findMany(limit, offset);
-        return allUsers;
-    }
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get(':id')
+  async findOne(@Param() params): Promise<UserResponse> {
+    const { id } = params;
 
-    @Get(':id')
-    async findOne(@Param() params): Promise<object> {
-        const { id } = params;
+    const userRepository = getCustomRepository(UsersService);
+    const foundUser = await userRepository.findById(id);
+    return new UserResponse(foundUser);
+  }
 
-        const userRepository = getCustomRepository(UsersService);
-        const foundUser = await userRepository.findById(id);
-        return foundUser;
-    }
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Patch(':id')
+  async updateUser(@Param() params, @Body() data): Promise<UserResponse> {
+    const { id } = params;
+    const userRepository = getCustomRepository(UsersService);
+    const updatedUser = await userRepository.updateUser(id, data);
+    return new UserResponse(updatedUser);
+  }
 
-    @Patch(':id')
-    async updateUser(@Param() params, @Body() data): Promise<object> {
-        const { id } = params;
-        const userRepository = getCustomRepository(UsersService);
-        const updatedUser = userRepository.updateUser(id, data);
-        return updatedUser;
-    }
+  @Delete(':id')
+  @HttpCode(204)
+  async deleteUser(@Param() params): Promise<void> {
+    const { id } = params;
 
-    @Delete(':id')
-    @HttpCode(204)
-    async deleteUser(@Param() params): Promise<void> {
-        const { id } = params;
+    const userRepository = getCustomRepository(UsersService);
+    await userRepository.deleteUser(id);
+  }
 
-        const userRepository = getCustomRepository(UsersService);
-        await userRepository.deleteUser(id);
-    }
-
-    @Delete()
-    @HttpCode(204)
-    async deleteMany(@Body() data): Promise<void> {
-        const { usersIds } = data;
-        const userRepository = getCustomRepository(UsersService);
-        await userRepository.deleteMany(usersIds);
-    }
+  @Delete()
+  @HttpCode(204)
+  async deleteMany(@Body() data): Promise<void> {
+    const { usersIds } = data;
+    const userRepository = getCustomRepository(UsersService);
+    await userRepository.deleteMany(usersIds);
+  }
 }
