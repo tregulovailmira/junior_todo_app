@@ -4,6 +4,7 @@ import {
   getRepository,
   getManager,
 } from 'typeorm';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { User } from '../../entity/User';
 import { Role } from '../../entity/Role';
 
@@ -18,8 +19,12 @@ export class UsersService extends Repository<User> {
     user.role = await roleRepository.findOne({ id: roleId || 2 });
     user.password = password;
 
-    const newUser = await this.save(user);
-    return newUser;
+    try {
+      const newUser = await this.save(user);
+      return newUser;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async findMany(limit, offset): Promise<object[]> {
@@ -31,17 +36,26 @@ export class UsersService extends Repository<User> {
   }
 
   async findById(id): Promise<object> {
-    return await this.findOne(id);
+    const foundUser = await this.findOne(id);
+    if (foundUser) {
+      return foundUser;
+    }
+    throw new NotFoundException('User not found');
   }
 
   async updateUser(id, data): Promise<object> {
-    await this.update(id, data);
-    const updatedUser = await this.findOne(id);
-    return updatedUser;
+    const { affected } = await this.update(id, data);
+    if (affected === 0) {
+      throw new BadRequestException("Can't update user with this id");
+    }
+    return await this.findOne(id);
   }
 
   async deleteUser(id): Promise<void> {
-    await this.delete(id);
+    const { affected } = await this.delete(id);
+    if (affected === 0) {
+      throw new BadRequestException("Can't update user with this id");
+    }
   }
 
   async deleteMany(usersIds): Promise<void> {
