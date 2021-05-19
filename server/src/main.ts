@@ -1,8 +1,7 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 require('dotenv').config();
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { connect } from './typeorm';
 

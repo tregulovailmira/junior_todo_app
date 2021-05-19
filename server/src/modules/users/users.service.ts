@@ -10,7 +10,7 @@ import { Role } from '../../entity/Role';
 
 @EntityRepository(User)
 export class UsersService extends Repository<User> {
-  async createAndSave(name, email, password, roleId): Promise<object> {
+  async createAndSave(name, email, password, roleId): Promise<any> {
     const user = new User();
     const roleRepository = getRepository(Role);
 
@@ -20,14 +20,13 @@ export class UsersService extends Repository<User> {
     user.password = password;
 
     try {
-      const newUser = await this.save(user);
-      return newUser;
+      return await this.save(user);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async findMany(limit, offset): Promise<object[]> {
+  async findMany(limit, offset): Promise<any[]> {
     return await getManager()
       .createQueryBuilder(User, 'user')
       .limit(limit ? limit : 10)
@@ -35,7 +34,7 @@ export class UsersService extends Repository<User> {
       .getMany();
   }
 
-  async findById(id): Promise<object> {
+  async findById(id): Promise<any> {
     const foundUser = await this.findOne(id);
     if (foundUser) {
       return foundUser;
@@ -43,7 +42,7 @@ export class UsersService extends Repository<User> {
     throw new NotFoundException('User not found');
   }
 
-  async updateUser(id, data): Promise<object> {
+  async updateUser(id, data): Promise<any> {
     const { affected } = await this.update(id, data);
     if (affected === 0) {
       throw new BadRequestException("Can't update user with this id");
