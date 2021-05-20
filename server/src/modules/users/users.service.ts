@@ -40,7 +40,7 @@ export class UsersService {
     }
   }
 
-  async findById(id): Promise<UserEntity> {
+  public async findById(id): Promise<UserEntity> {
     const foundUser = await this.userRepository.findOne(id);
     if (foundUser) {
       return foundUser;
@@ -48,7 +48,7 @@ export class UsersService {
     throw new NotFoundException('User not found');
   }
 
-  async updateUser(id, data): Promise<any> {
+  public async updateUser(id, data): Promise<UserEntity> {
     const { affected } = await this.userRepository.update(id, data);
     if (affected === 0) {
       throw new BadRequestException("Can't update user with this id");
@@ -56,14 +56,14 @@ export class UsersService {
     return await this.userRepository.findOne(id);
   }
 
-  async deleteUser(id): Promise<void> {
+  public async deleteUser(id): Promise<void> {
     const { affected } = await this.userRepository.delete(id);
     if (affected === 0) {
       throw new BadRequestException("Can't update user with this id");
     }
   }
 
-  async deleteMany(usersIds): Promise<void> {
+  public async deleteMany(usersIds): Promise<void> {
     try {
       await this.userRepository.delete(usersIds);
     } catch (error) {
