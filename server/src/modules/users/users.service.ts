@@ -1,41 +1,47 @@
+import { Repository, FindManyOptions } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import {
-  EntityRepository,
-  Repository,
-  getRepository,
-  getManager,
-} from 'typeorm';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { User } from '../../entity/User';
-import { Role } from '../../entity/Role';
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
+import { UserEntity } from './user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
-@EntityRepository(User)
-export class UsersService extends Repository<User> {
-  async createAndSave(name, email, password, roleId): Promise<any> {
-    const user = new User();
-    const roleRepository = getRepository(Role);
+@Injectable()
+export class UsersService {
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
 
-    user.name = name;
-    user.email = email;
-    user.role = await roleRepository.findOne({ id: roleId || 2 });
-    user.password = password;
-
+  public async createAndSave(user: CreateUserDto): Promise<UserEntity> {
+    const newUser = this.userRepository.create();
+    newUser.name = user.name;
+    newUser.email = user.email;
+    if (user.role) {
+      newUser.role = user.role;
+    }
+    newUser.password = user.password;
     try {
-      return await this.save(user);
+      return await this.userRepository.save(newUser);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async findMany(limit, offset): Promise<any[]> {
-    return await getManager()
-      .createQueryBuilder(User, 'user')
-      .limit(limit ? limit : 10)
-      .offset(offset ? offset : 0)
-      .getMany();
+  public async findMany(
+    options?: FindManyOptions<UserEntity>,
+  ): Promise<UserEntity[]> {
+    try {
+      return await this.userRepository.find(options);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
-  async findById(id): Promise<any> {
-    const foundUser = await this.findOne(id);
+  async findById(id): Promise<UserEntity> {
+    const foundUser = await this.userRepository.findOne(id);
     if (foundUser) {
       return foundUser;
     }
@@ -43,22 +49,25 @@ export class UsersService extends Repository<User> {
   }
 
   async updateUser(id, data): Promise<any> {
-    const { affected } = await this.update(id, data);
+    const { affected } = await this.userRepository.update(id, data);
     if (affected === 0) {
       throw new BadRequestException("Can't update user with this id");
     }
-    return await this.findOne(id);
+    return await this.userRepository.findOne(id);
   }
 
   async deleteUser(id): Promise<void> {
-    const { affected } = await this.delete(id);
+    const { affected } = await this.userRepository.delete(id);
     if (affected === 0) {
       throw new BadRequestException("Can't update user with this id");
     }
   }
 
   async deleteMany(usersIds): Promise<void> {
-    const deletedUsers = await this.findByIds(usersIds);
-    await this.remove(deletedUsers);
+    try {
+      await this.userRepository.delete(usersIds);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }
