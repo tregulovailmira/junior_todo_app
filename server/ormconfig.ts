@@ -6,10 +6,7 @@ const config = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   logging: true,
-  entities: [
-    __dirname + '/src/modules/**/*.entity.ts',
-    __dirname + '/dist/modules/**/*.entity.js',
-  ],
+  entities: [__dirname + '/src/modules/**/*.entity.ts'],
   migrations: [process.env.DB_MIGRATIONS],
   cli: {
     entitiesDir: process.env.DB_ENTITIES_DIR,
