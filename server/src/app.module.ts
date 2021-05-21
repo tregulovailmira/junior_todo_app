@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
+import { TodoModule } from './modules/todo/todo.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    TodoModule,
   ],
   controllers: [AppController],
   providers: [],

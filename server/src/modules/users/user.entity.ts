@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { TodoEntity } from '../todo/todo.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -25,4 +26,7 @@ export class UserEntity {
     default: UserRole.USER,
   })
   role: UserRole;
+
+  @OneToMany(() => TodoEntity, (object) => object.user)
+  todos: TodoEntity[];
 }
