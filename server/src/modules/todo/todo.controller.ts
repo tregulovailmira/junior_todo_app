@@ -7,11 +7,14 @@ import {
   Delete,
   HttpCode,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { TodoEntity } from './todo.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users/:userId/todos')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
