@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { Role } from '../../entity/Role';
+import { UserRole } from './user.entity';
 
 export class UserResponse {
   id: number;
@@ -11,7 +11,7 @@ export class UserResponse {
 
   name: string;
 
-  role: Role;
+  role: UserRole;
 
   constructor(partial: Partial<UserResponse>) {
     Object.assign(this, partial);

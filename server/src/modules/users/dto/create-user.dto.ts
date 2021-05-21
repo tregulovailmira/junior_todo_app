@@ -5,6 +5,7 @@ import {
   Length,
   IsString,
 } from 'class-validator';
+import { UserRole } from '../user.entity';
 
 export class CreateUserDto {
   @Length(2, 128)
@@ -19,7 +20,7 @@ export class CreateUserDto {
   password: string;
 
   @IsOptional()
-  roleId: number;
+  role: UserRole;
 
   test: string;
 }
