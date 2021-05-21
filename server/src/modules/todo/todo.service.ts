@@ -29,7 +29,7 @@ export class TodoService {
     try {
       return this.todoRepository.save(newTodo);
     } catch (error) {
-      throw new BadRequestException('user with');
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -52,7 +52,7 @@ export class TodoService {
   public async remove(id: number): Promise<void> {
     const { affected } = await this.todoRepository.delete(id);
     if (affected === 0) {
-      throw new BadRequestException("Can't delete user with this id");
+      throw new BadRequestException("Can't delete todo with this id");
     }
   }
 }
