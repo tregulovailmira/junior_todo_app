@@ -13,9 +13,15 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { HashPassword } from './users.decorator';
-import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import {
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  UseGuards,
+} from '@nestjs/common';
 import { UserResponse } from './user.response';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

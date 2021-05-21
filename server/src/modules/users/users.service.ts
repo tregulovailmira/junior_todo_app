@@ -70,4 +70,12 @@ export class UsersService {
       throw new BadRequestException(error.message);
     }
   }
+
+  public async findByEmail(email: string): Promise<UserEntity> {
+    try {
+      return await this.userRepository.findOne({ where: { email } });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 }
