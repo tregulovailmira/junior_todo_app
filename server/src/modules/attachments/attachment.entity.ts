@@ -12,6 +12,9 @@ export class AttachmentEntity {
   @Column()
   public todoId: number;
 
+  @Column()
+  public filePath: string;
+
   @ManyToOne(() => TodoEntity, (object) => object.attachments)
   public todo: TodoEntity;
 }
