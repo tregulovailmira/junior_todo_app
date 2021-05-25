@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AttachmentEntity } from './attachment.entity';
-import { Repository } from 'typeorm';
+import { Repository, Connection } from 'typeorm';
 import { Storage } from '@google-cloud/storage';
 import { ConfigService } from '@nestjs/config';
 import { TodoService } from '../todo/todo.service';
@@ -20,35 +20,40 @@ export class AttachmentsService implements OnModuleInit {
     private readonly attachmentRepository: Repository<AttachmentEntity>,
     private readonly todoService: TodoService,
     private readonly configService: ConfigService,
+    private readonly connection: Connection,
   ) {}
 
   public async create(
     fileName: string,
     todoId: number,
   ): Promise<AttachmentEntity> {
-    const newAttachment = this.attachmentRepository.create();
     const bucketName = this.configService.get('ATTACHMENT_BUCKET_NAME');
     const filePath = __dirname + `/temp/` + fileName;
     const storage = new Storage();
 
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
       const { userId } = await this.todoService.findOne(todoId);
       const destinationForGS = `user${userId}/todo${todoId}/` + fileName;
 
+      const newAttachment = this.attachmentRepository.create();
       newAttachment.link = `https://storage.cloud.google.com/${bucketName}/user${userId}/todo${todoId}/${fileName}`;
       newAttachment.filePath = destinationForGS;
       newAttachment.todoId = todoId;
-      const createdAttachment = await this.attachmentRepository.save(
-        newAttachment,
-      );
+      const createdAttachment =
+        await queryRunner.manager.save<AttachmentEntity>(newAttachment);
 
       await storage
-        .bucket(bucketName)
+        .bucket('bucketName')
         .upload(filePath, { destination: destinationForGS });
+
+      await queryRunner.commitTransaction();
 
       return createdAttachment;
     } catch (error) {
-      await this.attachmentRepository.delete({ link: newAttachment.link });
+      await queryRunner.rollbackTransaction();
       throw new BadRequestException(error.message);
     } finally {
       try {
