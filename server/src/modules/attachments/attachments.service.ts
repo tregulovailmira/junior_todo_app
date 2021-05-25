@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AttachmentEntity } from './attachment.entity';
-import { Repository, Connection } from 'typeorm';
+import { Repository, Connection, QueryRunner } from 'typeorm';
 import { Storage } from '@google-cloud/storage';
 import { ConfigService } from '@nestjs/config';
 import { TodoService } from '../todo/todo.service';
@@ -38,19 +38,19 @@ export class AttachmentsService implements OnModuleInit {
       const { userId } = await this.todoService.findOne(todoId);
       const destinationForGS = `user${userId}/todo${todoId}/` + fileName;
 
-      const newAttachment = this.attachmentRepository.create();
-      newAttachment.link = `https://storage.cloud.google.com/${bucketName}/user${userId}/todo${todoId}/${fileName}`;
-      newAttachment.filePath = destinationForGS;
-      newAttachment.todoId = todoId;
-      const createdAttachment =
-        await queryRunner.manager.save<AttachmentEntity>(newAttachment);
-
       await storage
-        .bucket('bucketName')
+        .bucket(bucketName)
         .upload(filePath, { destination: destinationForGS });
 
+      const createdAttachment = await this.createNewAttachmentAtDb(
+        queryRunner,
+        bucketName,
+        userId,
+        todoId,
+        fileName,
+        destinationForGS,
+      );
       await queryRunner.commitTransaction();
-
       return createdAttachment;
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -62,6 +62,21 @@ export class AttachmentsService implements OnModuleInit {
         console.log(error);
       }
     }
+  }
+
+  private async createNewAttachmentAtDb(
+    queryRunner: QueryRunner,
+    bucketName: string,
+    userId: number,
+    todoId: number,
+    fileName: string,
+    destinationForGS: string,
+  ): Promise<AttachmentEntity> {
+    const newAttachment = this.attachmentRepository.create();
+    newAttachment.link = `https://storage.cloud.google.com/${bucketName}/user${userId}/todo${todoId}/${fileName}`;
+    newAttachment.filePath = destinationForGS;
+    newAttachment.todoId = todoId;
+    return await queryRunner.manager.save<AttachmentEntity>(newAttachment);
   }
 
   public async findAll(todoId: string): Promise<AttachmentEntity[]> {
@@ -107,6 +122,7 @@ export class AttachmentsService implements OnModuleInit {
       throw new BadRequestException(error.message);
     }
   }
+
   async onModuleInit() {
     const storage = new Storage();
     const bucketName = this.configService.get('ATTACHMENT_BUCKET_NAME');
