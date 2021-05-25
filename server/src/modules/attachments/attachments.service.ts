@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { Storage } from '@google-cloud/storage';
 import { ConfigService } from '@nestjs/config';
 import { TodoService } from '../todo/todo.service';
+import { deleteFileFromTemp } from './utils/deleteFile.util';
 
 @Injectable()
 export class AttachmentsService {
@@ -24,7 +25,6 @@ export class AttachmentsService {
     todoId: number,
   ): Promise<AttachmentEntity> {
     const newAttachment = this.attachmentRepository.create();
-
     const bucketName = this.configService.get('ATTACHMENT_BUCKET_NAME');
     const filePath = __dirname + `/temp/` + fileName;
     const storage = new Storage();
@@ -46,7 +46,14 @@ export class AttachmentsService {
 
       return createdAttachment;
     } catch (error) {
+      await this.attachmentRepository.delete({ link: newAttachment.link });
       throw new BadRequestException(error.message);
+    } finally {
+      try {
+        await deleteFileFromTemp(filePath);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
