@@ -2,44 +2,55 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Patch,
   Param,
   Delete,
+  UploadedFile,
+  UseInterceptors,
+  BadRequestException,
+  HttpCode,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AttachmentsService } from './attachments.service';
-import { CreateAttachmentDto } from './dto/create-attachment.dto';
-import { UpdateAttachmentDto } from './dto/update-attachment.dto';
+import { diskStorage } from 'multer';
+import { editFileName } from './editFileName.utils';
 
-@Controller('attachments')
+@Controller('todos/:todoId/attachments')
 export class AttachmentsController {
   constructor(private readonly attachmentsService: AttachmentsService) {}
 
-  @Post()
-  create(@Body() createAttachmentDto: CreateAttachmentDto) {
-    return this.attachmentsService.create(createAttachmentDto);
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: __dirname + `/temp/`,
+        filename: editFileName,
+      }),
+    }),
+  )
+  async create(
+    @Param('todoId') todoId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    try {
+      return await this.attachmentsService.create(file.filename, +todoId);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Get()
-  findAll() {
-    return this.attachmentsService.findAll();
+  async findAll(@Param('todoId') todoId: string) {
+    return this.attachmentsService.findAll(todoId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.attachmentsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateAttachmentDto: UpdateAttachmentDto,
-  ) {
-    return this.attachmentsService.update(+id, updateAttachmentDto);
+  async findOne(@Param('id') id: string, @Param('todoId') todoId: string) {
+    return this.attachmentsService.findOne(+id, +todoId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.attachmentsService.remove(+id);
+  @HttpCode(204)
+  async remove(@Param('id') id: string, @Param('todoId') todoId: string) {
+    return this.attachmentsService.remove(+id, +todoId);
   }
 }

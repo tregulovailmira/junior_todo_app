@@ -1,26 +1,92 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAttachmentDto } from './dto/create-attachment.dto';
-import { UpdateAttachmentDto } from './dto/update-attachment.dto';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AttachmentEntity } from './attachment.entity';
+import { Repository } from 'typeorm';
+import { Storage } from '@google-cloud/storage';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AttachmentsService {
-  create(createAttachmentDto: CreateAttachmentDto) {
-    return 'This action adds a new attachment';
+  constructor(
+    @InjectRepository(AttachmentEntity)
+    private readonly attachmentRepository: Repository<AttachmentEntity>,
+    private readonly configService: ConfigService,
+  ) {}
+
+  public async create(
+    fileName: string,
+    todoId: number,
+  ): Promise<AttachmentEntity> {
+    const newAttachment = this.attachmentRepository.create();
+
+    const bucketName = this.configService.get('ATTACHMENT_BUCKET_NAME');
+    const filePath = __dirname + `/temp/` + fileName;
+    const destinationForGS = `todo${todoId}/` + fileName;
+    const storage = new Storage();
+
+    try {
+      newAttachment.link = `https://storage.cloud.google.com/${bucketName}/todo${todoId}/${fileName}`;
+      newAttachment.filePath = destinationForGS;
+      newAttachment.todoId = todoId;
+      const createdAttachment = await this.attachmentRepository.save(
+        newAttachment,
+      );
+
+      await storage
+        .bucket(bucketName)
+        .upload(filePath, { destination: destinationForGS });
+
+      return createdAttachment;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
-  findAll() {
-    return `This action returns all attachments`;
+  public async findAll(todoId: string): Promise<AttachmentEntity[]> {
+    try {
+      return await this.attachmentRepository.find({ where: { todoId } });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} attachment`;
+  public async findOne(id: number, todoId: number): Promise<AttachmentEntity> {
+    const foundAttachment = await this.attachmentRepository.findOne({
+      where: { id, todoId },
+    });
+    if (foundAttachment) {
+      return foundAttachment;
+    }
+    throw new NotFoundException('Attachment not found');
   }
 
-  update(id: number, updateAttachmentDto: UpdateAttachmentDto) {
-    return `This action updates a #${id} attachment`;
-  }
+  public async remove(id: number, todoId: number): Promise<void> {
+    const foundAttachment = await this.attachmentRepository.findOne({
+      where: { id, todoId },
+    });
+    const storage = new Storage();
+    const bucketName = this.configService.get('ATTACHMENT_BUCKET_NAME');
+    try {
+      if (!foundAttachment) {
+        throw new NotFoundException("Can't delete attachment with this id");
+      }
 
-  remove(id: number) {
-    return `This action removes a #${id} attachment`;
+      const { affected } = await this.attachmentRepository.delete({
+        id,
+        todoId,
+      });
+
+      if (affected === 0) {
+        throw new BadRequestException("Can't delete attachment with this id");
+      }
+
+      await storage.bucket(bucketName).file(foundAttachment.filePath).delete();
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }
