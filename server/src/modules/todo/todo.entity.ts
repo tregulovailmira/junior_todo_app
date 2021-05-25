@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { UserEntity } from '../users/user.entity';
+import { AttachmentEntity } from '../attachments/attachment.entity';
 
 @Entity('todo')
 export class TodoEntity {
@@ -17,4 +24,7 @@ export class TodoEntity {
 
   @ManyToOne(() => UserEntity, (object) => object.todos)
   public user: UserEntity;
+
+  @OneToMany(() => AttachmentEntity, (object) => object.todo)
+  attachments: AttachmentEntity[];
 }

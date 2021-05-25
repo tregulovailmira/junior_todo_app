@@ -5,6 +5,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { TodoModule } from './modules/todo/todo.module';
+import { AttachmentsModule } from './modules/attachments/attachments.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { TodoModule } from './modules/todo/todo.module';
       isGlobal: true,
     }),
     TodoModule,
+    AttachmentsModule,
   ],
   controllers: [AppController],
   providers: [],
