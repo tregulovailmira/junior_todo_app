@@ -8,12 +8,14 @@ import { AttachmentEntity } from './attachment.entity';
 import { Repository } from 'typeorm';
 import { Storage } from '@google-cloud/storage';
 import { ConfigService } from '@nestjs/config';
+import { TodoService } from '../todo/todo.service';
 
 @Injectable()
 export class AttachmentsService {
   constructor(
     @InjectRepository(AttachmentEntity)
     private readonly attachmentRepository: Repository<AttachmentEntity>,
+    private readonly todoService: TodoService,
     private readonly configService: ConfigService,
   ) {}
 
@@ -25,11 +27,13 @@ export class AttachmentsService {
 
     const bucketName = this.configService.get('ATTACHMENT_BUCKET_NAME');
     const filePath = __dirname + `/temp/` + fileName;
-    const destinationForGS = `todo${todoId}/` + fileName;
     const storage = new Storage();
 
     try {
-      newAttachment.link = `https://storage.cloud.google.com/${bucketName}/todo${todoId}/${fileName}`;
+      const { userId } = await this.todoService.findOne(todoId);
+      const destinationForGS = `user${userId}/todo${todoId}/` + fileName;
+
+      newAttachment.link = `https://storage.cloud.google.com/${bucketName}/user${userId}/todo${todoId}/${fileName}`;
       newAttachment.filePath = destinationForGS;
       newAttachment.todoId = todoId;
       const createdAttachment = await this.attachmentRepository.save(
