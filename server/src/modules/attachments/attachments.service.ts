@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  OnModuleInit,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AttachmentEntity } from './attachment.entity';
@@ -12,7 +14,7 @@ import { TodoService } from '../todo/todo.service';
 import { deleteFileFromTemp } from './utils/deleteFile.util';
 
 @Injectable()
-export class AttachmentsService {
+export class AttachmentsService implements OnModuleInit {
   constructor(
     @InjectRepository(AttachmentEntity)
     private readonly attachmentRepository: Repository<AttachmentEntity>,
@@ -98,6 +100,29 @@ export class AttachmentsService {
       await storage.bucket(bucketName).file(foundAttachment.filePath).delete();
     } catch (error) {
       throw new BadRequestException(error.message);
+    }
+  }
+  async onModuleInit() {
+    const storage = new Storage();
+    const bucketName = this.configService.get('ATTACHMENT_BUCKET_NAME');
+    const storageClass = 'standard';
+    const location = 'EU';
+    const [buckets] = await storage.getBuckets();
+    const foundBucket = buckets.find((bucket) => bucket.name === bucketName);
+
+    if (!foundBucket) {
+      try {
+        const [bucket] = await storage.createBucket(bucketName, {
+          location,
+          [storageClass]: true,
+        });
+        console.log(
+          `${bucket.name} created with ${storageClass} class in ${location}`,
+        );
+      } catch (error) {
+        console.log(error);
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 }
