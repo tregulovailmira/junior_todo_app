@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AttachmentsService } from './attachments.service';
-import { AttachmentsController } from './attachments.controller';
+import { UsersAttachmentsController } from './usersAttachments.controller';
 import { TodoModule } from '../todo/todo.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AttachmentEntity } from './attachment.entity';
 import { MulterModule } from '@nestjs/platform-express';
+import { AdminAttachmentsController } from './adminAttachments.controller';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { MulterModule } from '@nestjs/platform-express';
       }),
     }),
   ],
-  controllers: [AttachmentsController],
+  controllers: [UsersAttachmentsController, AdminAttachmentsController],
   providers: [AttachmentsService],
   exports: [AttachmentsService],
 })

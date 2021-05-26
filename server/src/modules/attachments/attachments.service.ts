@@ -26,6 +26,7 @@ export class AttachmentsService implements OnModuleInit {
   public async create(
     fileName: string,
     todoId: number,
+    userId?: number,
   ): Promise<AttachmentEntity> {
     const bucketName = this.configService.get('ATTACHMENT_BUCKET_NAME');
     const filePath = __dirname + `/temp/` + fileName;
@@ -35,7 +36,11 @@ export class AttachmentsService implements OnModuleInit {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { userId } = await this.todoService.findOne(todoId);
+      const todo = await this.todoService.findOne(todoId);
+      userId = userId ? userId : todo.userId;
+      if (todo.userId !== userId) {
+        throw new NotFoundException('Todo with this id not found!');
+      }
       const destinationForGS = `user${userId}/todo${todoId}/` + fileName;
 
       await storage
@@ -67,7 +72,7 @@ export class AttachmentsService implements OnModuleInit {
   private async createNewAttachmentAtDb(
     queryRunner: QueryRunner,
     bucketName: string,
-    userId: number,
+    userId: number | Promise<number>,
     todoId: number,
     fileName: string,
     destinationForGS: string,
@@ -79,15 +84,34 @@ export class AttachmentsService implements OnModuleInit {
     return await queryRunner.manager.save<AttachmentEntity>(newAttachment);
   }
 
-  public async findAll(todoId: string): Promise<AttachmentEntity[]> {
+  public async findAll(
+    todoId: number,
+    userId?: number,
+  ): Promise<AttachmentEntity[]> {
     try {
+      if (userId) {
+        const isSameUser = await this.isUsersTodo(todoId, userId);
+        if (!isSameUser) {
+          throw new NotFoundException();
+        }
+      }
       return await this.attachmentRepository.find({ where: { todoId } });
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  public async findOne(id: number, todoId: number): Promise<AttachmentEntity> {
+  public async findOne(
+    id: number,
+    todoId: number,
+    userId?: number,
+  ): Promise<AttachmentEntity> {
+    if (userId) {
+      const isSameUser = await this.isUsersTodo(todoId, userId);
+      if (!isSameUser) {
+        throw new NotFoundException();
+      }
+    }
     const foundAttachment = await this.attachmentRepository.findOne({
       where: { id, todoId },
     });
@@ -97,10 +121,20 @@ export class AttachmentsService implements OnModuleInit {
     throw new NotFoundException('Attachment not found');
   }
 
-  public async remove(id: number, todoId: number): Promise<void> {
+  public async remove(
+    id: number,
+    todoId: number,
+    userId?: number,
+  ): Promise<void> {
     const foundAttachment = await this.attachmentRepository.findOne({
       where: { id, todoId },
     });
+    if (userId) {
+      const isSameUser = await this.isUsersTodo(todoId, userId);
+      if (!isSameUser) {
+        throw new NotFoundException();
+      }
+    }
     const storage = new Storage();
     const bucketName = this.configService.get('ATTACHMENT_BUCKET_NAME');
     try {
@@ -121,6 +155,11 @@ export class AttachmentsService implements OnModuleInit {
     } catch (error) {
       throw new BadRequestException(error.message);
     }
+  }
+
+  private async isUsersTodo(todoId, userId): Promise<boolean> {
+    const todo = await this.todoService.findOneForUser(todoId, userId);
+    return todo.userId === userId;
   }
 
   async onModuleInit() {

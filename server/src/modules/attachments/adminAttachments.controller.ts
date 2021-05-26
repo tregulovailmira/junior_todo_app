@@ -1,24 +1,24 @@
 import {
+  BadRequestException,
   Controller,
-  Get,
-  Post,
-  Param,
   Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
   UploadedFile,
   UseInterceptors,
-  BadRequestException,
-  HttpCode,
-  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AttachmentsService } from './attachments.service';
 import { diskStorage } from 'multer';
 import { editFileName } from './utils/editFileName.utils';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Roles } from '../role/role.decorator';
+import { RoleEnum } from '../role/role.enum';
 
-@UseGuards(JwtAuthGuard)
-@Controller('todos/:todoId/attachments')
-export class AttachmentsController {
+@Roles(RoleEnum.Admin)
+@Controller('admin/todos/:todoId/attachments')
+export class AdminAttachmentsController {
   constructor(private readonly attachmentsService: AttachmentsService) {}
 
   @Post('upload')
@@ -43,7 +43,7 @@ export class AttachmentsController {
 
   @Get()
   async findAll(@Param('todoId') todoId: string) {
-    return this.attachmentsService.findAll(todoId);
+    return this.attachmentsService.findAll(+todoId);
   }
 
   @Get(':id')
