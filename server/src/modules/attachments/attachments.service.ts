@@ -37,7 +37,7 @@ export class AttachmentsService implements OnModuleInit {
     await queryRunner.startTransaction();
     try {
       const todo = await this.todoService.findOne(todoId);
-      userId = userId ? userId : todo.userId;
+      userId = userId || todo.userId;
       if (todo.userId !== userId) {
         throw new NotFoundException('Todo with this id not found!');
       }
