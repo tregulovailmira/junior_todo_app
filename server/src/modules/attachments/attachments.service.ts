@@ -84,34 +84,15 @@ export class AttachmentsService implements OnModuleInit {
     return await queryRunner.manager.save<AttachmentEntity>(newAttachment);
   }
 
-  public async findAll(
-    todoId: number,
-    userId?: number,
-  ): Promise<AttachmentEntity[]> {
+  public async findAll(todoId: number): Promise<AttachmentEntity[]> {
     try {
-      if (userId) {
-        const isSameUser = await this.isUsersTodo(todoId, userId);
-        if (!isSameUser) {
-          throw new NotFoundException();
-        }
-      }
       return await this.attachmentRepository.find({ where: { todoId } });
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  public async findOne(
-    id: number,
-    todoId: number,
-    userId?: number,
-  ): Promise<AttachmentEntity> {
-    if (userId) {
-      const isSameUser = await this.isUsersTodo(todoId, userId);
-      if (!isSameUser) {
-        throw new NotFoundException();
-      }
-    }
+  public async findOne(id: number, todoId: number): Promise<AttachmentEntity> {
     const foundAttachment = await this.attachmentRepository.findOne({
       where: { id, todoId },
     });
@@ -121,20 +102,10 @@ export class AttachmentsService implements OnModuleInit {
     throw new NotFoundException('Attachment not found');
   }
 
-  public async remove(
-    id: number,
-    todoId: number,
-    userId?: number,
-  ): Promise<void> {
+  public async remove(id: number, todoId: number): Promise<void> {
     const foundAttachment = await this.attachmentRepository.findOne({
       where: { id, todoId },
     });
-    if (userId) {
-      const isSameUser = await this.isUsersTodo(todoId, userId);
-      if (!isSameUser) {
-        throw new NotFoundException();
-      }
-    }
     const storage = new Storage();
     const bucketName = this.configService.get('ATTACHMENT_BUCKET_NAME');
     try {
@@ -157,7 +128,7 @@ export class AttachmentsService implements OnModuleInit {
     }
   }
 
-  private async isUsersTodo(todoId, userId): Promise<boolean> {
+  public async isUsersTodo(todoId, userId): Promise<boolean> {
     const todo = await this.todoService.findOneForUser(todoId, userId);
     return todo.userId === userId;
   }

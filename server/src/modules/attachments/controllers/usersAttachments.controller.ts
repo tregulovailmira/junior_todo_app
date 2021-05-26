@@ -10,6 +10,7 @@ import {
   UseGuards,
   UseInterceptors,
   Req,
+  NotFoundException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AttachmentsService } from '../attachments.service';
@@ -58,7 +59,14 @@ export class UsersAttachmentsController {
     const {
       user: { userId },
     } = req;
-    return this.attachmentsService.findAll(+todoId, userId);
+    const isSameUser = await this.attachmentsService.isUsersTodo(
+      todoId,
+      userId,
+    );
+    if (!isSameUser) {
+      throw new NotFoundException();
+    }
+    return this.attachmentsService.findAll(+todoId);
   }
 
   @Get(':id')
@@ -70,7 +78,14 @@ export class UsersAttachmentsController {
     const {
       user: { userId },
     } = req;
-    return this.attachmentsService.findOne(+id, +todoId, userId);
+    const isSameUser = await this.attachmentsService.isUsersTodo(
+      todoId,
+      userId,
+    );
+    if (!isSameUser) {
+      throw new NotFoundException();
+    }
+    return this.attachmentsService.findOne(+id, +todoId);
   }
 
   @Delete(':id')
@@ -83,6 +98,13 @@ export class UsersAttachmentsController {
     const {
       user: { userId },
     } = req;
-    return this.attachmentsService.remove(+id, +todoId, userId);
+    const isSameUser = await this.attachmentsService.isUsersTodo(
+      todoId,
+      userId,
+    );
+    if (!isSameUser) {
+      throw new NotFoundException();
+    }
+    return this.attachmentsService.remove(+id, +todoId);
   }
 }
