@@ -18,7 +18,6 @@ export class RolesService implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const roles = this.reflector.getAllAndOverride<RoleEnum[]>(ROLES_KEY, [
-      context.getHandler(),
       context.getClass(),
     ]);
     if (!roles) {
