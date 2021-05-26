@@ -72,7 +72,7 @@ export class AttachmentsService implements OnModuleInit {
   private async createNewAttachmentAtDb(
     queryRunner: QueryRunner,
     bucketName: string,
-    userId: number | Promise<number>,
+    userId: number,
     todoId: number,
     fileName: string,
     destinationForGS: string,
