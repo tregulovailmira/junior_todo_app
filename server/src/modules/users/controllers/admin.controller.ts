@@ -1,29 +1,27 @@
 import {
-  Req,
-  Controller,
-  Post,
-  Get,
-  Patch,
-  Delete,
   Body,
-  Param,
-  HttpCode,
-  Query,
-} from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { HashPassword } from './users.decorator';
-import {
-  UseInterceptors,
   ClassSerializerInterceptor,
-  UseGuards,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UseInterceptors,
 } from '@nestjs/common';
-import { UserResponse } from './user.response';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { UsersService } from '../users.service';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { HashPassword } from '../users.decorator';
+import { UserResponse } from '../user.response';
+import { RoleEnum } from '../../role/role.enum';
+import { Roles } from '../../role/role.decorator';
 
-@UseGuards(JwtAuthGuard)
-@Controller('users')
-export class UsersController {
+@Roles(RoleEnum.Admin)
+@Controller('admin/users')
+export class AdminController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
