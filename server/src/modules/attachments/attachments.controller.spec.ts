@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersAttachmentsController } from './usersAttachments.controller';
+import { UsersAttachmentsController } from './controllers/usersAttachments.controller';
 import { AttachmentsService } from './attachments.service';
 
 describe('AttachmentsController', () => {

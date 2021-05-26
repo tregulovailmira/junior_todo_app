@@ -32,7 +32,7 @@ export class RolesService implements CanActivate {
         const user = this.jwtService.verify(authorization.slice(7));
         return roles.some((role) => user['role'].includes(role));
       } catch (error) {
-        throw new UnauthorizedException(error.message);
+        throw new UnauthorizedException();
       }
     }
   }

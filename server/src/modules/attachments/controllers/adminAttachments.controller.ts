@@ -10,11 +10,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AttachmentsService } from './attachments.service';
+import { AttachmentsService } from '../attachments.service';
 import { diskStorage } from 'multer';
-import { editFileName } from './utils/editFileName.utils';
-import { Roles } from '../role/role.decorator';
-import { RoleEnum } from '../role/role.enum';
+import { editFileName } from '../utils/editFileName.utils';
+import { Roles } from '../../role/role.decorator';
+import { RoleEnum } from '../../role/role.enum';
 
 @Roles(RoleEnum.Admin)
 @Controller('admin/todos/:todoId/attachments')
@@ -25,7 +25,7 @@ export class AdminAttachmentsController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: __dirname + `/temp/`,
+        destination: __dirname + `/../../../temp/`,
         filename: editFileName,
       }),
     }),

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AttachmentsService } from './attachments.service';
-import { UsersAttachmentsController } from './usersAttachments.controller';
+import { UsersAttachmentsController } from './controllers/usersAttachments.controller';
 import { TodoModule } from '../todo/todo.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AttachmentEntity } from './attachment.entity';
 import { MulterModule } from '@nestjs/platform-express';
-import { AdminAttachmentsController } from './adminAttachments.controller';
+import { AdminAttachmentsController } from './controllers/adminAttachments.controller';
 
 @Module({
   imports: [
@@ -13,7 +13,7 @@ import { AdminAttachmentsController } from './adminAttachments.controller';
     TypeOrmModule.forFeature([AttachmentEntity]),
     MulterModule.registerAsync({
       useFactory: () => ({
-        dest: __dirname + '/modules/attachments/temp/',
+        dest: __dirname + '/../../temp/',
       }),
     }),
   ],

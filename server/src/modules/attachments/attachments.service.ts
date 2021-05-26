@@ -29,7 +29,7 @@ export class AttachmentsService implements OnModuleInit {
     userId?: number,
   ): Promise<AttachmentEntity> {
     const bucketName = this.configService.get('ATTACHMENT_BUCKET_NAME');
-    const filePath = __dirname + `/temp/` + fileName;
+    const filePath = __dirname + `/../../temp/` + fileName;
     const storage = new Storage();
 
     const queryRunner = this.connection.createQueryRunner();
