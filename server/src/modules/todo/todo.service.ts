@@ -49,8 +49,26 @@ export class TodoService {
     throw new NotFoundException('Todo with this id not found');
   }
 
+  public async findOneForUser(id: number, userId: number): Promise<TodoEntity> {
+    const foundTodo = await this.todoRepository.findOne({ id, userId });
+    if (foundTodo) {
+      return foundTodo;
+    }
+    throw new NotFoundException('Todo with this id not found');
+  }
+
   public async remove(id: number): Promise<void> {
     const { affected } = await this.todoRepository.delete(id);
+    if (affected === 0) {
+      throw new BadRequestException("Can't delete todo with this id");
+    }
+  }
+
+  public async removeForUser(id: number, userId: number): Promise<void> {
+    const { affected } = await this.todoRepository.delete({
+      id,
+      userId,
+    });
     if (affected === 0) {
       throw new BadRequestException("Can't delete todo with this id");
     }

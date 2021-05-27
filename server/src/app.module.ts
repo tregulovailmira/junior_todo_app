@@ -3,9 +3,13 @@ import { UsersModule } from './modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { AppController } from './app.controller';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TodoModule } from './modules/todo/todo.module';
 import { AttachmentsModule } from './modules/attachments/attachments.module';
+import { RoleModule } from './modules/role/role.module';
+import { JwtModule } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesService } from './modules/role/role.service';
 
 @Module({
   imports: [
@@ -27,8 +31,21 @@ import { AttachmentsModule } from './modules/attachments/attachments.module';
     }),
     TodoModule,
     AttachmentsModule,
+    RoleModule,
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
+        signOptions: { expiresIn: configService.get('EXPIRES_IN') },
+      }),
+      inject: [ConfigService],
+    }),
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesService,
+    },
   ],
   controllers: [AppController],
-  providers: [],
 })
 export class AppModule {}

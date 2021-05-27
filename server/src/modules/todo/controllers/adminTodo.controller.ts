@@ -1,22 +1,22 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  HttpCode,
   BadRequestException,
-  UseGuards,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
 } from '@nestjs/common';
-import { TodoService } from './todo.service';
-import { CreateTodoDto } from './dto/create-todo.dto';
-import { TodoEntity } from './todo.entity';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { TodoService } from '../todo.service';
+import { CreateTodoDto } from '../dto/create-todo.dto';
+import { TodoEntity } from '../todo.entity';
+import { Roles } from '../../role/role.decorator';
+import { RoleEnum } from '../../role/role.enum';
 
-@UseGuards(JwtAuthGuard)
-@Controller('users/:userId/todos')
-export class TodoController {
+@Roles(RoleEnum.Admin)
+@Controller('admin/users/:userId/todos')
+export class AdminTodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Post()
