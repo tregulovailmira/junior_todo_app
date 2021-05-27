@@ -10,7 +10,6 @@ import {
   UseGuards,
   UseInterceptors,
   Req,
-  NotFoundException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AttachmentsService } from '../attachments.service';
@@ -19,8 +18,9 @@ import { editFileName } from '../utils/editFileName.utils';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Roles } from '../../role/role.decorator';
 import { RoleEnum } from '../../role/role.enum';
+import { AccessCheckStrategy } from '../accessCheck.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, AccessCheckStrategy)
 @Roles(RoleEnum.User)
 @Controller('user/todos/:todoId/attachments')
 export class UsersAttachmentsController {
@@ -56,16 +56,6 @@ export class UsersAttachmentsController {
 
   @Get()
   async findAll(@Req() req: any, @Param('todoId') todoId: string) {
-    const {
-      user: { userId },
-    } = req;
-    const isSameUser = await this.attachmentsService.isUsersTodo(
-      todoId,
-      userId,
-    );
-    if (!isSameUser) {
-      throw new NotFoundException();
-    }
     return this.attachmentsService.findAll(+todoId);
   }
 
@@ -75,16 +65,6 @@ export class UsersAttachmentsController {
     @Param('id') id: string,
     @Param('todoId') todoId: string,
   ) {
-    const {
-      user: { userId },
-    } = req;
-    const isSameUser = await this.attachmentsService.isUsersTodo(
-      todoId,
-      userId,
-    );
-    if (!isSameUser) {
-      throw new NotFoundException();
-    }
     return this.attachmentsService.findOne(+id, +todoId);
   }
 
@@ -95,16 +75,6 @@ export class UsersAttachmentsController {
     @Param('id') id: string,
     @Param('todoId') todoId: string,
   ) {
-    const {
-      user: { userId },
-    } = req;
-    const isSameUser = await this.attachmentsService.isUsersTodo(
-      todoId,
-      userId,
-    );
-    if (!isSameUser) {
-      throw new NotFoundException();
-    }
     return this.attachmentsService.remove(+id, +todoId);
   }
 }
