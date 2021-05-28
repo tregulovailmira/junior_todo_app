@@ -1,5 +1,5 @@
-import React from 'react';
-import { Formik, Form, Field } from 'formik';
+import React, { useCallback, useMemo } from 'react';
+import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-material-ui';
 import { useAppDispatch } from '../../app/hooks';
 import { authRequest } from '../../reducers/authReducer';
@@ -9,28 +9,27 @@ import { validationSchema } from '../../validation/validationSchema';
 
 const CustomInput = styled(TextField)({
   margin: '10px 0',
-  padding: '10px 0',
+  padding: '10px 0'
 });
 
 function LoginForm (props: any) {
-
-  const initialValues = {
-    username: '',
-    password: '',
-  };
-
+  const { isFetching } = props;
   const dispatch = useAppDispatch();
 
-  const { isFetching } = props;
+  const memoizedValues = useMemo(() => {
+    return {
+      username: '',
+      password: ''
+    };
+  }, []);
 
-  const onSubmitHandler = (values: any, formikBag: any) => {
+  const onSubmitHandler = useCallback((values, formikBag) => {
     dispatch(authRequest(values));
     formikBag.resetForm();
-  };
+  }, []);
 
   return (
-
-      <Formik initialValues={initialValues} onSubmit={onSubmitHandler} validationSchema={validationSchema}>
+      <Formik initialValues={memoizedValues} onSubmit={onSubmitHandler} validationSchema={validationSchema}>
         <Form>
           <Field name='username' type='text' placeholder="Email" component={CustomInput} fullWidth={true}/>
           <Field name='password' type='password' placeholder="Password" component={CustomInput} fullWidth={true}/>
@@ -39,7 +38,7 @@ function LoginForm (props: any) {
           </Button>
         </Form>
       </Formik>
-  )
+  );
 }
 
 export default LoginForm;
