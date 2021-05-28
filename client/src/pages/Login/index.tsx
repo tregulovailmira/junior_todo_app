@@ -16,6 +16,9 @@ const CustomTypography = styled(Typography)({
 const CustomBox = styled(Box)({
   display: "flex",
   flexDirection: 'column',
+  maxWidth: '600px',
+  margin: '0 auto',
+  padding: '0 10px'
 });
 
 function Login (props: any) {
