@@ -12,7 +12,7 @@ const CustomInput = styled(TextField)({
   padding: '10px 0',
 });
 
-function LoginForm () {
+function LoginForm (props: any) {
 
   const initialValues = {
     username: '',
@@ -20,6 +20,8 @@ function LoginForm () {
   };
 
   const dispatch = useAppDispatch();
+
+  const { isFetching } = props;
 
   const onSubmitHandler = (values: any, formikBag: any) => {
     dispatch(authRequest(values));
@@ -32,7 +34,9 @@ function LoginForm () {
         <Form>
           <Field name='username' type='text' placeholder="Email" component={CustomInput} fullWidth={true}/>
           <Field name='password' type='password' placeholder="Password" component={CustomInput} fullWidth={true}/>
-          <Button color="primary" variant="contained" type='submit' size="large" fullWidth={true}>LOGIN</Button>
+          <Button color="primary" variant="contained" type='submit' size="large" fullWidth={true}>
+            { isFetching ? 'LOADING' : 'LOGIN' }
+          </Button>
         </Form>
       </Formik>
   )

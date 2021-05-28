@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { withRouter } from "react-router";
 import LoginForm from '../../components/LoginForm';
 import { useAppSelector } from "../../app/hooks";
-import { Typography, Box } from "@material-ui/core";
+import { Typography, Box, FormHelperText } from "@material-ui/core";
 import { styled } from '@material-ui/core/styles';
 
 const CustomTypography = styled(Typography)({
@@ -17,12 +17,24 @@ const CustomBox = styled(Box)({
   display: "flex",
   flexDirection: 'column',
   maxWidth: '600px',
-  margin: '0 auto',
-  padding: '0 10px'
+  margin: '100px auto',
+  padding: '0 10px',
+});
+
+const CustomError = styled(FormHelperText)({
+  color: 'red',
+  textAlign: 'center',
+  fontSize: '1.2rem',
+  position: 'absolute',
+  top: '44px',
+  left: '50%',
+  transform: 'translate(-50%)',
+  lineHeight: '1'
+
 });
 
 function Login (props: any) {
-  const user = useAppSelector((state) => state.login.user);
+  const { user, isFetching, error } = useAppSelector((state) => state.login);
 
   useEffect(() => {
     const { history } = props;
@@ -36,7 +48,8 @@ function Login (props: any) {
 
   return <CustomBox component='div'>
       <CustomTypography variant="h1">Login</CustomTypography>
-      <LoginForm/>;
+      { error && <CustomError>{error.message}</CustomError> }
+      <LoginForm isFetching={isFetching}/>;
   </CustomBox>
 }
 
