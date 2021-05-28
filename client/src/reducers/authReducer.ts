@@ -2,30 +2,35 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import * as API from '../api/restController';
 
 interface State {
-  isFetching: boolean,
-  error: any,
-  user: any
+  isFetching: boolean;
+  error: any;
+  user: any;
 }
 
 const initialState: State = {
   isFetching: false,
   error: null,
-  user: {}
+  user: {},
 };
-export const authRequest = createAsyncThunk('AUTH_REQUEST', async (data: any, { rejectWithValue }) => {
-  try {
-    const { data: { user } } = await API.loginRequest(data);
-    return user;
-  } catch (error) {
-    return rejectWithValue(error.response.data);
-  }
-});
+export const authRequest = createAsyncThunk(
+  'AUTH_REQUEST',
+  async (data: any, { rejectWithValue }) => {
+    try {
+      const {
+        data: { user },
+      } = await API.loginRequest(data);
+      return user;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
 
 const auth = createSlice({
   name: 'auth',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
       .addCase(authRequest.fulfilled, (state, action) => {
         state.user = action.payload;
@@ -36,10 +41,10 @@ const auth = createSlice({
         state.error = action.payload;
         state.isFetching = false;
       })
-      .addCase(authRequest.pending, (state) => {
+      .addCase(authRequest.pending, state => {
         state.isFetching = true;
         state.error = null;
       });
-  }
+  },
 });
 export default auth;

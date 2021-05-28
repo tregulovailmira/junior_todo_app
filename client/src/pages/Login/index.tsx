@@ -10,7 +10,7 @@ const CustomTypography = styled(Typography)({
   padding: '10px',
   fontSize: '4rem',
   fontWeight: 'normal',
-  color: '#2d3da0'
+  color: '#2d3da0',
 });
 
 const CustomBox = styled(Box)({
@@ -18,7 +18,7 @@ const CustomBox = styled(Box)({
   flexDirection: 'column',
   maxWidth: '600px',
   margin: '100px auto',
-  padding: '0 10px'
+  padding: '0 10px',
 });
 
 const CustomError = styled(FormHelperText)({
@@ -29,12 +29,11 @@ const CustomError = styled(FormHelperText)({
   top: '44px',
   left: '50%',
   transform: 'translate(-50%)',
-  lineHeight: '1'
-
+  lineHeight: '1',
 });
 
-function Login (props: any) {
-  const { user, isFetching, error } = useAppSelector((state) => state.login);
+function Login(props: any) {
+  const { user, isFetching, error } = useAppSelector(state => state.login);
 
   useEffect(() => {
     const { history } = props;
@@ -46,11 +45,13 @@ function Login (props: any) {
     }
   }, [user]);
 
-  return <CustomBox component='div'>
+  return (
+    <CustomBox component="div">
       <CustomTypography variant="h1">Login</CustomTypography>
-      { error && <CustomError>{error.message}</CustomError> }
-      <LoginForm isFetching={isFetching}/>;
-  </CustomBox>;
+      {error && <CustomError>{error.message}</CustomError>}
+      <LoginForm isFetching={isFetching} />;
+    </CustomBox>
+  );
 }
 
 export default withRouter(Login);

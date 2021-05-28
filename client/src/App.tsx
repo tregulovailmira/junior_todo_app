@@ -3,13 +3,13 @@ import { Router, Route, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import Login from './pages/Login';
 
-function App () {
+function App() {
   return (
-      <Router history={createBrowserHistory()}>
-        <Switch>
-          <Route path='/auth/login' component={Login}/>
-        </Switch>
-      </Router>
+    <Router history={createBrowserHistory()}>
+      <Switch>
+        <Route path="/auth/login" component={Login} />
+      </Switch>
+    </Router>
   );
 }
 

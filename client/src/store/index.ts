@@ -3,8 +3,8 @@ import auth from '../reducers/authReducer';
 
 const store = configureStore({
   reducer: {
-    login: auth.reducer
-  }
+    login: auth.reducer,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
