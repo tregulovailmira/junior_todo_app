@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { withRouter } from "react-router";
+import { withRouter } from 'react-router';
 import LoginForm from '../../components/LoginForm';
-import { useAppSelector } from "../../app/hooks";
-import { Typography, Box, FormHelperText } from "@material-ui/core";
+import { useAppSelector } from '../../app/hooks';
+import { Typography, Box, FormHelperText } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 
 const CustomTypography = styled(Typography)({
@@ -14,11 +14,11 @@ const CustomTypography = styled(Typography)({
 });
 
 const CustomBox = styled(Box)({
-  display: "flex",
+  display: 'flex',
   flexDirection: 'column',
   maxWidth: '600px',
   margin: '100px auto',
-  padding: '0 10px',
+  padding: '0 10px'
 });
 
 const CustomError = styled(FormHelperText)({
@@ -38,11 +38,11 @@ function Login (props: any) {
 
   useEffect(() => {
     const { history } = props;
-    if(user.role === 'user') {
-      history.replace('/todos')
+    if (user.role === 'user') {
+      history.replace('/todos');
     }
-    if(user.role === 'admin') {
-      history.replace('/admin-dashboard')
+    if (user.role === 'admin') {
+      history.replace('/admin-dashboard');
     }
   }, [user]);
 
@@ -50,7 +50,7 @@ function Login (props: any) {
       <CustomTypography variant="h1">Login</CustomTypography>
       { error && <CustomError>{error.message}</CustomError> }
       <LoginForm isFetching={isFetching}/>;
-  </CustomBox>
+  </CustomBox>;
 }
 
 export default withRouter(Login);
