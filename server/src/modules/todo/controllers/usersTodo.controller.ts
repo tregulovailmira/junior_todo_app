@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -16,6 +17,8 @@ import { TodoEntity } from '../todo.entity';
 import { Roles } from '../../role/role.decorator';
 import { RoleEnum } from '../../role/role.enum';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { UpdateTodoDto } from '../dto/update-todo.dto';
+import { AccessCheckStrategy } from '../accessCheck.guard';
 
 @UseGuards(JwtAuthGuard)
 @Roles(RoleEnum.User)
@@ -52,6 +55,15 @@ export class UsersTodoController {
       user: { userId },
     } = req;
     return await this.todoService.findOneForUser(+id, userId);
+  }
+
+  @UseGuards(AccessCheckStrategy)
+  @Patch(':id')
+  async update(
+    @Body() updateTodoDto: UpdateTodoDto,
+    @Param('id') id: string,
+  ): Promise<TodoEntity> {
+    return await this.todoService.update(id, updateTodoDto);
   }
 
   @Delete(':id')

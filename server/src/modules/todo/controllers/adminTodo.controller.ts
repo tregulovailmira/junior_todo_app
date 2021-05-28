@@ -6,10 +6,12 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { TodoService } from '../todo.service';
 import { CreateTodoDto } from '../dto/create-todo.dto';
+import { UpdateTodoDto } from '../dto/update-todo.dto';
 import { TodoEntity } from '../todo.entity';
 import { Roles } from '../../role/role.decorator';
 import { RoleEnum } from '../../role/role.enum';
@@ -39,6 +41,14 @@ export class AdminTodoController {
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<TodoEntity> {
     return await this.todoService.findOne(+id);
+  }
+
+  @Patch(':id')
+  async update(
+    @Body() updateTodoDto: UpdateTodoDto,
+    @Param('id') id: string,
+  ): Promise<TodoEntity> {
+    return await this.todoService.update(id, updateTodoDto);
   }
 
   @Delete(':id')
