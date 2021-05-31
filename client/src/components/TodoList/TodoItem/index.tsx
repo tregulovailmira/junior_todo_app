@@ -31,26 +31,20 @@ function TodoItem(props: any) {
 
   const dispatch = useAppDispatch();
 
-  const updateTodoStatus = useCallback(
-    (id, status) => {
-      const changedStatus =
-        status === TodoStatus.IN_PROGRESS ? TodoStatus.DONE : TodoStatus.IN_PROGRESS;
-      dispatch(
-        updateUserTodoRequest({
-          id,
-          status: changedStatus,
-        }),
-      );
-    },
-    [id, status],
-  );
+  const updateTodoStatus = useCallback(() => {
+    const changedStatus =
+      status === TodoStatus.IN_PROGRESS ? TodoStatus.DONE : TodoStatus.IN_PROGRESS;
+    dispatch(
+      updateUserTodoRequest({
+        id,
+        status: changedStatus,
+      }),
+    );
+  }, [id, status]);
 
-  const deleteTodo = useCallback(
-    id => {
-      dispatch(deleteUserTodoRequest(id));
-    },
-    [id],
-  );
+  const deleteTodo = useCallback(() => {
+    dispatch(deleteUserTodoRequest(id));
+  }, [id]);
 
   return (
     <>
@@ -62,17 +56,12 @@ function TodoItem(props: any) {
             <Typography variant="body1">{status}</Typography>
             <Checkbox
               color="primary"
-              onClick={(event: React.MouseEvent<HTMLElement>) => updateTodoStatus(id, status)}
+              onClick={updateTodoStatus}
               checked={status === TodoStatus.DONE}
             />
           </ProgressBox>
         </ListItemText>
-        <Icon
-          component={DeleteIcon}
-          onClick={(e: React.MouseEvent<SVGSVGElement>) => deleteTodo(id)}
-          fontSize="large"
-          color="primary"
-        />
+        <Icon component={DeleteIcon} onClick={deleteTodo} fontSize="large" color="primary" />
       </ListItem>
       <Divider />
     </>
