@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useAppDispatch } from '../../../app/hooks';
 import { updateUserTodoRequest, deleteUserTodoRequest } from '../../../payloadCreators/todoPayload';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -30,19 +30,25 @@ function TodoItem(props: any) {
 
   const dispatch = useAppDispatch();
 
-  const updateTodoStatus = () => {
-    const changedStatus = status === 'in progress' ? 'done' : 'in progress';
-    dispatch(
-      updateUserTodoRequest({
-        id,
-        status: changedStatus,
-      }),
-    );
-  };
+  const updateTodoStatus = useCallback(
+    (id, status) => {
+      const changedStatus = status === 'in progress' ? 'done' : 'in progress';
+      dispatch(
+        updateUserTodoRequest({
+          id,
+          status: changedStatus,
+        }),
+      );
+    },
+    [id, status],
+  );
 
-  const deleteTodo = () => {
-    dispatch(deleteUserTodoRequest(id));
-  };
+  const deleteTodo = useCallback(
+    id => {
+      dispatch(deleteUserTodoRequest(id));
+    },
+    [id],
+  );
 
   return (
     <>
@@ -52,10 +58,19 @@ function TodoItem(props: any) {
           <Typography variant="body1">{body}</Typography>
           <ProgressBox component="div">
             <Typography variant="body1">{status}</Typography>
-            <Checkbox color="primary" onClick={updateTodoStatus} checked={status === 'done'} />
+            <Checkbox
+              color="primary"
+              onClick={(event: React.MouseEvent<HTMLElement>) => updateTodoStatus(id, status)}
+              checked={status === 'done'}
+            />
           </ProgressBox>
         </ListItemText>
-        <Icon component={DeleteIcon} onClick={deleteTodo} fontSize="large" color="primary" />
+        <Icon
+          component={DeleteIcon}
+          onClick={(e: React.MouseEvent<SVGSVGElement>) => deleteTodo(id)}
+          fontSize="large"
+          color="primary"
+        />
       </ListItem>
       <Divider />
     </>
