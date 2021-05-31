@@ -2,8 +2,26 @@ import React from 'react';
 import { useAppDispatch } from '../../../app/hooks';
 import { updateUserTodoRequest, deleteUserTodoRequest } from '../../../payloadCreators/todoPayload';
 import DeleteIcon from '@material-ui/icons/Delete';
+import {
+  Typography,
+  ListItem,
+  Checkbox,
+  Icon,
+  Box,
+  ListItemText,
+  Divider,
+} from '@material-ui/core';
+import { styled } from '@material-ui/core/styles';
 
-import { Typography, ListItem, Checkbox, Icon } from '@material-ui/core';
+const CustomHeader = styled(Typography)({
+  fontSize: '1.3rem',
+  marginBottom: '8px',
+});
+const ProgressBox = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  textTransform: 'capitalize',
+});
 
 function TodoItem(props: any) {
   const {
@@ -27,13 +45,20 @@ function TodoItem(props: any) {
   };
 
   return (
-    <ListItem>
-      <Typography variant="h4">{header}</Typography>
-      <Typography variant="body1">{body}</Typography>
-      <Typography variant="body1">{status}</Typography>
-      <Checkbox onClick={updateTodoStatus} checked={status === 'done'} />
-      <Icon component={DeleteIcon} onClick={deleteTodo} />
-    </ListItem>
+    <>
+      <ListItem alignItems="center">
+        <ListItemText>
+          <CustomHeader variant="h3">{header}</CustomHeader>
+          <Typography variant="body1">{body}</Typography>
+          <ProgressBox component="div">
+            <Typography variant="body1">{status}</Typography>
+            <Checkbox color="primary" onClick={updateTodoStatus} checked={status === 'done'} />
+          </ProgressBox>
+        </ListItemText>
+        <Icon component={DeleteIcon} onClick={deleteTodo} fontSize="large" color="primary" />
+      </ListItem>
+      <Divider />
+    </>
   );
 }
 
