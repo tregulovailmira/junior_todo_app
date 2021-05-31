@@ -25,6 +25,7 @@ export class TodoService {
       newTodo.body = createTodoDto.body;
     }
     newTodo.userId = userId;
+    newTodo.deadline = createTodoDto.deadline;
 
     try {
       return this.todoRepository.save(newTodo);

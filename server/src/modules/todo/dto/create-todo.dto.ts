@@ -9,4 +9,6 @@ export class CreateTodoDto {
 
   @IsOptional()
   status: string;
+
+  deadline: Date;
 }

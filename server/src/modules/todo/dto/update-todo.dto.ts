@@ -10,4 +10,7 @@ export class UpdateTodoDto {
 
   @IsOptional()
   status: string;
+
+  @IsOptional()
+  deadline: Date;
 }

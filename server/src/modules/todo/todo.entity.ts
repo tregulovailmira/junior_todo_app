@@ -34,6 +34,9 @@ export class TodoEntity {
   })
   public status: TodoStatus;
 
+  @Column({ type: 'date' })
+  public deadline: Date;
+
   @ManyToOne(() => UserEntity, (object) => object.todos)
   public user: UserEntity;
 
