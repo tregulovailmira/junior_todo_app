@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { getTodosRequest } from '../../payloadCreators/todoPayload';
 import TodoItem from './TodoItem';
@@ -29,33 +29,43 @@ function TodoList() {
   const dispatch = useAppDispatch();
   const { todos } = useAppSelector(state => state.todos);
 
-  useEffect(() => {
+  const getTodos = useCallback(() => {
     dispatch(getTodosRequest());
   }, []);
 
-  const renderInProgressTasks = () =>
-    todos.map(todo => {
-      if (todo.status === 'in progress') {
-        return <TodoItem key={todo.id} todo={todo} />;
-      }
-    });
+  useEffect(() => {
+    getTodos();
+  }, []);
 
-  const renderDoneTasks = () =>
-    todos.map(todo => {
-      if (todo.status === 'done') {
-        return <TodoItem key={todo.id} todo={todo} />;
-      }
-    });
+  const renderInProgressTasks = useMemo(
+    () =>
+      todos.map(todo => {
+        if (todo.status === 'in progress') {
+          return <TodoItem key={todo.id} todo={todo} />;
+        }
+      }),
+    [todos],
+  );
+
+  const renderDoneTasks = useMemo(
+    () =>
+      todos.map(todo => {
+        if (todo.status === 'done') {
+          return <TodoItem key={todo.id} todo={todo} />;
+        }
+      }),
+    [todos],
+  );
 
   return (
     <CustomBox>
       <ListBox component="div">
         <CustomHeader variant="h2">In Progress</CustomHeader>
-        <List>{renderInProgressTasks()}</List>
+        <List>{renderInProgressTasks}</List>
       </ListBox>
       <ListBox component="div">
         <CustomHeader variant="h2">Done</CustomHeader>
-        <List>{renderDoneTasks()}</List>
+        <List>{renderDoneTasks}</List>
       </ListBox>
     </CustomBox>
   );
