@@ -22,3 +22,15 @@ export const updateUserTodoRequest = createAsyncThunk(
     }
   },
 );
+
+export const deleteUserTodoRequest = createAsyncThunk(
+  'DELETE_TODO',
+  async (id: number, { rejectWithValue }) => {
+    try {
+      await API.deleteUserTodo(id);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  },
+);

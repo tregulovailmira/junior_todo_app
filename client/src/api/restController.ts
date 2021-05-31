@@ -11,3 +11,7 @@ export const getUserTodos = () => {
 export const updateUserTodo = (data: any) => {
   return http.patch(`user/todos/${data.id}`, data);
 };
+
+export const deleteUserTodo = (id: number) => {
+  return http.delete(`user/todos/${id}`);
+};

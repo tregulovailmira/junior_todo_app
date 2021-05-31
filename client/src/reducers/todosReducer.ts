@@ -1,5 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getTodosRequest, updateUserTodoRequest } from '../payloadCreators/todoPayload';
+import {
+  getTodosRequest,
+  updateUserTodoRequest,
+  deleteUserTodoRequest,
+} from '../payloadCreators/todoPayload';
 
 interface State {
   isFetching: boolean;
@@ -50,6 +54,19 @@ const todos = createSlice({
         state.isFetching = false;
       })
       .addCase(updateUserTodoRequest.pending, state => {
+        state.isFetching = true;
+        state.error = null;
+      })
+      .addCase(deleteUserTodoRequest.fulfilled, (state, action) => {
+        state.isFetching = false;
+        state.error = null;
+        state.todos = state.todos.filter(todo => todo.id !== action.payload);
+      })
+      .addCase(deleteUserTodoRequest.rejected, (state, action) => {
+        state.isFetching = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteUserTodoRequest.pending, state => {
         state.isFetching = true;
         state.error = null;
       });
