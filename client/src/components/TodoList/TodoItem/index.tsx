@@ -12,6 +12,7 @@ import {
   Divider,
 } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
+import { TodoStatus } from '../../../enums';
 
 const CustomHeader = styled(Typography)({
   fontSize: '1.3rem',
@@ -32,7 +33,8 @@ function TodoItem(props: any) {
 
   const updateTodoStatus = useCallback(
     (id, status) => {
-      const changedStatus = status === 'in progress' ? 'done' : 'in progress';
+      const changedStatus =
+        status === TodoStatus.IN_PROGRESS ? TodoStatus.DONE : TodoStatus.IN_PROGRESS;
       dispatch(
         updateUserTodoRequest({
           id,
@@ -61,7 +63,7 @@ function TodoItem(props: any) {
             <Checkbox
               color="primary"
               onClick={(event: React.MouseEvent<HTMLElement>) => updateTodoStatus(id, status)}
-              checked={status === 'done'}
+              checked={status === TodoStatus.DONE}
             />
           </ProgressBox>
         </ListItemText>

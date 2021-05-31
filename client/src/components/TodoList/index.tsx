@@ -5,6 +5,7 @@ import TodoItem from './TodoItem';
 import { Box, Typography, List } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 import Loader from 'react-loader-spinner';
+import { TodoStatus } from '../../enums';
 
 const CustomBox = styled(Box)({
   display: 'flex',
@@ -53,7 +54,7 @@ function TodoList() {
   const renderInProgressTasks = useMemo(
     () =>
       todos.map(todo => {
-        if (todo.status === 'in progress') {
+        if (todo.status === TodoStatus.IN_PROGRESS) {
           return <TodoItem key={todo.id} todo={todo} />;
         }
       }),
@@ -63,7 +64,7 @@ function TodoList() {
   const renderDoneTasks = useMemo(
     () =>
       todos.map(todo => {
-        if (todo.status === 'done') {
+        if (todo.status === TodoStatus.DONE) {
           return <TodoItem key={todo.id} todo={todo} />;
         }
       }),
