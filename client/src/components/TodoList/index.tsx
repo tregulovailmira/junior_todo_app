@@ -17,6 +17,7 @@ const CustomBox = styled(Box)({
 const ListBox = styled(Box)({
   maxWidth: '300px',
   width: '100%',
+  height: '100%',
   boxShadow: '0px 0px 8px 0px rgba(34, 60, 80, 0.2)',
   padding: '15px',
 });
