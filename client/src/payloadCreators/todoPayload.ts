@@ -5,7 +5,8 @@ export const getTodosRequest = createAsyncThunk(
   'GET_USER_TODOS',
   async (_, { rejectWithValue }) => {
     try {
-      return await API.getUserTodos();
+      const { data } = await API.getUserTodos();
+      return data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -16,7 +17,8 @@ export const updateUserTodoRequest = createAsyncThunk(
   'UPDATE_TODO',
   async (data: any, { rejectWithValue }) => {
     try {
-      return await API.updateUserTodo(data);
+      const { data: updatedTodo } = await API.updateUserTodo(data);
+      return updatedTodo;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }

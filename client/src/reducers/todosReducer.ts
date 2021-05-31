@@ -24,7 +24,7 @@ const todos = createSlice({
   extraReducers: builder => {
     builder
       .addCase(getTodosRequest.fulfilled, (state, action) => {
-        state.todos = action.payload.data;
+        state.todos = action.payload;
         state.isFetching = false;
         state.error = null;
       })
@@ -39,12 +39,10 @@ const todos = createSlice({
       .addCase(updateUserTodoRequest.fulfilled, (state, action) => {
         state.error = null;
         state.isFetching = false;
-        const {
-          payload: { data },
-        } = action;
+        const { payload } = action;
         state.todos = state.todos.map(todo => {
-          if (todo.id === data.id) {
-            return data;
+          if (todo.id === payload.id) {
+            return payload;
           }
           return todo;
         });
