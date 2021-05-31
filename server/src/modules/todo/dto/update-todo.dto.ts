@@ -1,7 +1,8 @@
 import { Length, IsOptional } from 'class-validator';
 
-export class CreateTodoDto {
+export class UpdateTodoDto {
   @Length(2, 128)
+  @IsOptional()
   header: string;
 
   @IsOptional()

@@ -8,6 +8,11 @@ import {
 import { UserEntity } from '../users/user.entity';
 import { AttachmentEntity } from '../attachments/attachment.entity';
 
+export enum TodoStatus {
+  DONE = 'done',
+  IN_PROGRESS = 'in progress',
+}
+
 @Entity('todo')
 export class TodoEntity {
   @PrimaryGeneratedColumn()
@@ -21,6 +26,13 @@ export class TodoEntity {
 
   @Column()
   public userId: number;
+
+  @Column({
+    type: 'enum',
+    enum: TodoStatus,
+    default: TodoStatus.IN_PROGRESS,
+  })
+  public status: TodoStatus;
 
   @ManyToOne(() => UserEntity, (object) => object.todos)
   public user: UserEntity;

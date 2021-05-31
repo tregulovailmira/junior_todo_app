@@ -57,6 +57,14 @@ export class TodoService {
     throw new NotFoundException('Todo with this id not found');
   }
 
+  public async update(id, data): Promise<TodoEntity> {
+    const { affected } = await this.todoRepository.update(id, data);
+    if (affected === 0) {
+      throw new BadRequestException("Can't update todo with this id!");
+    }
+    return await this.todoRepository.findOne(id);
+  }
+
   public async remove(id: number): Promise<void> {
     const { affected } = await this.todoRepository.delete(id);
     if (affected === 0) {

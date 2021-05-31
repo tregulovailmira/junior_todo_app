@@ -49,7 +49,7 @@ function Login(props: any) {
     <CustomBox component="div">
       <CustomTypography variant="h1">Login</CustomTypography>
       {error && <CustomError>{error.message}</CustomError>}
-      <LoginForm isFetching={isFetching} />;
+      <LoginForm isFetching={isFetching} />
     </CustomBox>
   );
 }
