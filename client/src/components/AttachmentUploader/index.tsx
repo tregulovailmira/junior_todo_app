@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Box } from '@material-ui/core';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { styled } from '@material-ui/styles';
+import Loader from 'react-loader-spinner';
 
 const CustomBox = styled(Box)({
   display: 'grid',
@@ -18,6 +19,7 @@ const CustomBox = styled(Box)({
 });
 
 function AttachmentUploader(props: any) {
+  const { isFetching, error, todoId } = useAppSelector(state => state.uploadAttachments);
   const dispatch = useAppDispatch();
 
   const onDrop = useCallback(acceptedFiles => {
@@ -41,6 +43,14 @@ function AttachmentUploader(props: any) {
     >
       <input {...getInputProps()} />
       {isDragActive && <CustomBox component="p">Drop the files here ...</CustomBox>}
+      {isFetching && props.todoId === todoId && (
+        <CustomBox>
+          <Loader type="ThreeDots" color="#3f51b5" width={50} />
+        </CustomBox>
+      )}
+      {error && props.todoId === todoId && (
+        <CustomBox style={{ color: 'red' }}>{error.message}</CustomBox>
+      )}
       {props.children}
     </Box>
   );
