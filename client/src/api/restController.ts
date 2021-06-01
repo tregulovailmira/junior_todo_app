@@ -15,3 +15,7 @@ export const updateUserTodo = (data: any) => {
 export const deleteUserTodo = (id: number) => {
   return http.delete(`user/todos/${id}`);
 };
+
+export const createUserTodo = (data: any) => {
+  return http.post('user/todos', data);
+};

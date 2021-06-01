@@ -3,6 +3,7 @@ import {
   getTodosRequest,
   updateUserTodoRequest,
   deleteUserTodoRequest,
+  createTodoRequest,
 } from '../payloadCreators/todoPayload';
 
 interface State {
@@ -23,6 +24,19 @@ const todos = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
+      .addCase(createTodoRequest.fulfilled, (state, action) => {
+        state.isFetching = false;
+        state.error = null;
+        state.todos = [...state.todos, action.payload];
+      })
+      .addCase(createTodoRequest.rejected, (state, action) => {
+        state.isFetching = false;
+        state.error = action.payload;
+      })
+      .addCase(createTodoRequest.pending, state => {
+        state.isFetching = true;
+        state.error = null;
+      })
       .addCase(getTodosRequest.fulfilled, (state, action) => {
         state.todos = action.payload;
         state.isFetching = false;

@@ -1,12 +1,14 @@
 import { Length, IsOptional } from 'class-validator';
+import { TodoStatus } from '../todo.entity';
 
 export class CreateTodoDto {
   @Length(2, 128)
   header: string;
 
-  @IsOptional()
   body: string;
 
   @IsOptional()
-  status: string;
+  status: TodoStatus;
+
+  deadline: Date;
 }

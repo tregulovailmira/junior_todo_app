@@ -26,7 +26,7 @@ const ProgressBox = styled(Box)({
 
 function TodoItem(props: any) {
   const {
-    todo: { header, body, status, id },
+    todo: { header, body, status, id, deadline },
   } = props;
 
   const dispatch = useAppDispatch();
@@ -60,6 +60,7 @@ function TodoItem(props: any) {
               checked={status === TodoStatus.DONE}
             />
           </ProgressBox>
+          <Typography variant="body2">Deadline: {deadline}</Typography>
         </ListItemText>
         <Icon component={DeleteIcon} onClick={deleteTodo} fontSize="large" color="primary" />
       </ListItem>

@@ -24,7 +24,11 @@ export class TodoService {
     if (createTodoDto.body) {
       newTodo.body = createTodoDto.body;
     }
+    if (createTodoDto.status) {
+      newTodo.status = createTodoDto.status;
+    }
     newTodo.userId = userId;
+    newTodo.deadline = createTodoDto.deadline;
 
     try {
       return this.todoRepository.save(newTodo);
