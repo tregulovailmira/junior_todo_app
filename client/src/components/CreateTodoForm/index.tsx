@@ -24,9 +24,9 @@ const CustomForm = styled(Form)({
   boxShadow: '0px 0px 8px 0px rgba(34, 60, 80, 0.2)',
 });
 
-function CreateTodoForm() {
+function CreateTodoForm(props: any) {
   const dispatch = useAppDispatch();
-
+  const { isFetching } = props;
   const memoizedValues = useMemo(() => {
     return {
       header: '',
@@ -60,7 +60,7 @@ function CreateTodoForm() {
           <Field component={DatePicker} name="deadline" />
         </MuiPickersUtilsProvider>
         <Button type="submit" size="large" variant="contained" color="primary">
-          Create
+          {isFetching ? 'LOADING...' : 'Create'}
         </Button>
       </CustomForm>
     </Formik>
