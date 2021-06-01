@@ -27,11 +27,15 @@ function AttachmentUploader(props: any) {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
+  const onClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  };
+
   return (
     <Box
       component="div"
       {...getRootProps({
-        onClick: event => event.stopPropagation(),
+        onClick: onClick,
       })}
       style={{ position: 'relative' }}
     >
