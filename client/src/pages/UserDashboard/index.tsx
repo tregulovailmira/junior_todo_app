@@ -18,7 +18,7 @@ const CustomBox = styled(Box)({
 function UserDashboard() {
   return (
     <CustomBox>
-      <CustomLink href="/newTodo" color="primary">
+      <CustomLink href="/todos/create" color="primary">
         {'New Todo'}
       </CustomLink>
       <TodoList />
