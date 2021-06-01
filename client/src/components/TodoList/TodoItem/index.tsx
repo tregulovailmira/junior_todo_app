@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useAppDispatch } from '../../../app/hooks';
 import { updateUserTodoRequest, deleteUserTodoRequest } from '../../../payloadCreators/todoPayload';
+import { uploadUserAttachmentRequest } from '../../../payloadCreators/attachmentPayload';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {
   Typography,
@@ -13,6 +14,7 @@ import {
 } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 import { TodoStatus } from '../../../enums';
+import AttachmentUploader from '../../AttachmentUploader';
 
 const CustomHeader = styled(Typography)({
   fontSize: '1.3rem',
@@ -47,7 +49,7 @@ function TodoItem(props: any) {
   }, [id]);
 
   return (
-    <>
+    <AttachmentUploader todoId={id} uploadAttachment={uploadUserAttachmentRequest}>
       <ListItem alignItems="center">
         <ListItemText>
           <CustomHeader variant="h3">{header}</CustomHeader>
@@ -65,7 +67,7 @@ function TodoItem(props: any) {
         <Icon component={DeleteIcon} onClick={deleteTodo} fontSize="large" color="primary" />
       </ListItem>
       <Divider />
-    </>
+    </AttachmentUploader>
   );
 }
 

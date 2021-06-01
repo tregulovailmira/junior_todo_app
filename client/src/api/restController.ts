@@ -19,3 +19,13 @@ export const deleteUserTodo = (id: number) => {
 export const createUserTodo = (data: any) => {
   return http.post('user/todos', data);
 };
+
+export const uploadAttachmentByUser = (data: any) => {
+  const formData = new FormData();
+  formData.set('file', data.file, data.file.name);
+  return http.post(`user/todos/${data.todoId}/attachments/upload`, formData, {
+    headers: {
+      'Content-type': 'multipart/form-data',
+    },
+  });
+};
