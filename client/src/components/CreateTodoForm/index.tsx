@@ -9,6 +9,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { DatePicker } from 'formik-material-ui-pickers';
 import { styled } from '@material-ui/core/styles';
+import { createTodoValidationSchema } from '../../validation/validationSchema';
 
 const CustomTextField = styled(TextField)({
   margin: '10px 0',
@@ -41,7 +42,11 @@ function CreateTodoForm() {
   }, []);
 
   return (
-    <Formik initialValues={memoizedValues} onSubmit={onSubmitHandler}>
+    <Formik
+      initialValues={memoizedValues}
+      onSubmit={onSubmitHandler}
+      validationSchema={createTodoValidationSchema}
+    >
       <CustomForm>
         <Field name="header" component={CustomTextField} placeholder="Header" />
         <Field name="body" component={CustomTextField} multiline={true} placeholder="Description" />
