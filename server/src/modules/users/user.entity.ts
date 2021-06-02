@@ -27,6 +27,9 @@ export class UserEntity {
   })
   role: UserRole;
 
-  @OneToMany(() => TodoEntity, (object) => object.user)
+  @OneToMany(() => TodoEntity, (object) => object.user, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   todos: TodoEntity[];
 }

@@ -15,6 +15,9 @@ export class AttachmentEntity {
   @Column()
   public filePath: string;
 
-  @ManyToOne(() => TodoEntity, (object) => object.attachments)
+  @ManyToOne(() => TodoEntity, (object) => object.attachments, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   public todo: TodoEntity;
 }
