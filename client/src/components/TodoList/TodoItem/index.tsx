@@ -28,7 +28,7 @@ const ProgressBox = styled(Box)({
 
 function TodoItem(props: any) {
   const {
-    todo: { header, body, status, id, deadline },
+    todo: { header, status, id, deadline },
   } = props;
 
   const dispatch = useAppDispatch();
@@ -53,7 +53,6 @@ function TodoItem(props: any) {
       <ListItem alignItems="center">
         <ListItemText>
           <CustomHeader variant="h3">{header}</CustomHeader>
-          <Typography variant="body1">{body}</Typography>
           <ProgressBox component="div">
             <Typography variant="body1">{status}</Typography>
             <Checkbox
