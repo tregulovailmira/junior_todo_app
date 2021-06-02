@@ -5,11 +5,12 @@ import {
   deleteUserTodoRequest,
   createTodoRequest,
 } from '../payloadCreators/todoPayload';
+import { Todo } from '../interfaces';
 
 interface State {
   isFetching: boolean;
   error: any;
-  todos: any[];
+  todos: Todo[];
 }
 
 const initialState: State = {

@@ -12,7 +12,11 @@ const CustomInput = styled(TextField)({
   padding: '10px 0',
 });
 
-function LoginForm(props: any) {
+interface LoginProps {
+  isFetching: boolean;
+}
+
+function LoginForm(props: LoginProps) {
   const { isFetching } = props;
   const dispatch = useAppDispatch();
 

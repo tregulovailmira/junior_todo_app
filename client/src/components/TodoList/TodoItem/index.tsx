@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useAppDispatch } from '../../../app/hooks';
 import { updateUserTodoRequest, deleteUserTodoRequest } from '../../../payloadCreators/todoPayload';
+import { uploadUserAttachmentRequest } from '../../../payloadCreators/attachmentPayload';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {
   Typography,
@@ -13,6 +14,8 @@ import {
 } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 import { TodoStatus } from '../../../enums';
+import AttachmentUploader from '../../AttachmentUploader';
+import { Todo } from '../../../interfaces';
 
 const CustomHeader = styled(Typography)({
   fontSize: '1.3rem',
@@ -24,9 +27,13 @@ const ProgressBox = styled(Box)({
   textTransform: 'capitalize',
 });
 
-function TodoItem(props: any) {
+interface TodoItemProps {
+  todo: Todo;
+}
+
+function TodoItem(props: TodoItemProps) {
   const {
-    todo: { header, body, status, id, deadline },
+    todo: { header, status, id, deadline },
   } = props;
 
   const dispatch = useAppDispatch();
@@ -47,11 +54,10 @@ function TodoItem(props: any) {
   }, [id]);
 
   return (
-    <>
+    <AttachmentUploader todoId={id} uploadAttachment={uploadUserAttachmentRequest}>
       <ListItem alignItems="center">
         <ListItemText>
           <CustomHeader variant="h3">{header}</CustomHeader>
-          <Typography variant="body1">{body}</Typography>
           <ProgressBox component="div">
             <Typography variant="body1">{status}</Typography>
             <Checkbox
@@ -65,7 +71,7 @@ function TodoItem(props: any) {
         <Icon component={DeleteIcon} onClick={deleteTodo} fontSize="large" color="primary" />
       </ListItem>
       <Divider />
-    </>
+    </AttachmentUploader>
   );
 }
 

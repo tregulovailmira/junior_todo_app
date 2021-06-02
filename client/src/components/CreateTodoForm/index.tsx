@@ -24,7 +24,11 @@ const CustomForm = styled(Form)({
   boxShadow: '0px 0px 8px 0px rgba(34, 60, 80, 0.2)',
 });
 
-function CreateTodoForm(props: any) {
+interface CreateTodoProps {
+  isFetching: boolean;
+}
+
+function CreateTodoForm(props: CreateTodoProps) {
   const dispatch = useAppDispatch();
   const { isFetching } = props;
   const memoizedValues = useMemo(() => {

@@ -37,9 +37,15 @@ export class TodoEntity {
   @Column({ type: 'date' })
   public deadline: Date;
 
-  @ManyToOne(() => UserEntity, (object) => object.todos)
+  @ManyToOne(() => UserEntity, (object) => object.todos, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   public user: UserEntity;
 
-  @OneToMany(() => AttachmentEntity, (object) => object.todo)
+  @OneToMany(() => AttachmentEntity, (object) => object.todo, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   attachments: AttachmentEntity[];
 }
