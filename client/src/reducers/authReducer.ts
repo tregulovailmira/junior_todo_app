@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import * as API from '../api/restController';
+import { User, DataForAuth } from '../interfaces';
+import { MyError } from '../interfaces';
 
 interface State {
   isFetching: boolean;
@@ -12,7 +14,8 @@ const initialState: State = {
   error: null,
   user: {},
 };
-export const authRequest = createAsyncThunk(
+
+export const authRequest = createAsyncThunk<User, DataForAuth, { rejectValue: MyError }>(
   'AUTH_REQUEST',
   async (data: any, { rejectWithValue }) => {
     try {

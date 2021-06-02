@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { History } from 'history';
 import { withRouter } from 'react-router';
 import LoginForm from '../../components/LoginForm';
 import { useAppSelector } from '../../app/hooks';
@@ -32,7 +33,11 @@ const CustomError = styled(FormHelperText)({
   lineHeight: '1',
 });
 
-function Login(props: any) {
+interface LoginProps {
+  history: History;
+}
+
+function Login(props: LoginProps) {
   const { user, isFetching, error } = useAppSelector(state => state.login);
 
   useEffect(() => {

@@ -15,6 +15,7 @@ import {
 import { styled } from '@material-ui/core/styles';
 import { TodoStatus } from '../../../enums';
 import AttachmentUploader from '../../AttachmentUploader';
+import { Todo } from '../../../interfaces';
 
 const CustomHeader = styled(Typography)({
   fontSize: '1.3rem',
@@ -26,7 +27,11 @@ const ProgressBox = styled(Box)({
   textTransform: 'capitalize',
 });
 
-function TodoItem(props: any) {
+interface TodoItemProps {
+  todo: Todo;
+}
+
+function TodoItem(props: TodoItemProps) {
   const {
     todo: { header, status, id, deadline },
   } = props;

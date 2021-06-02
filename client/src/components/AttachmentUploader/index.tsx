@@ -4,6 +4,8 @@ import { Box } from '@material-ui/core';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { styled } from '@material-ui/styles';
 import Loader from 'react-loader-spinner';
+import { AsyncThunk } from '@reduxjs/toolkit';
+import { DataForUploadAttachment, MyError } from '../../interfaces';
 
 const CustomBox = styled(Box)({
   display: 'grid',
@@ -18,7 +20,13 @@ const CustomBox = styled(Box)({
   opacity: '0.9',
 });
 
-function AttachmentUploader(props: any) {
+interface AttachmentProps {
+  todoId: number;
+  children: React.ReactElement[];
+  uploadAttachment: AsyncThunk<void, DataForUploadAttachment, { rejectValue: MyError }>;
+}
+
+function AttachmentUploader(props: AttachmentProps) {
   const { isFetching, error, todoId } = useAppSelector(state => state.uploadAttachments);
   const dispatch = useAppDispatch();
 
