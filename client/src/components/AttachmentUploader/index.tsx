@@ -20,14 +20,12 @@ const CustomBox = styled(Box)({
   opacity: '0.9',
 });
 
-interface Props {
+interface AttachmentUploaderProps {
   todoId: number;
   uploadAttachment: AsyncThunk<void, DataForUploadAttachment, { rejectValue: MyError }>;
 }
 
-interface AttachmentProps extends React.PropsWithChildren<Props> {}
-
-function AttachmentUploader(props: AttachmentProps) {
+function AttachmentUploader(props: React.PropsWithChildren<AttachmentUploaderProps>) {
   const { isFetching, error, todoId } = useAppSelector(state => state.uploadAttachments);
   const dispatch = useAppDispatch();
 
