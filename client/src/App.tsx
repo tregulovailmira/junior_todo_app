@@ -4,6 +4,7 @@ import { createBrowserHistory } from 'history';
 import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
 import CreateTodo from './pages/CreateTodo';
+import AdminUsersScreen from './pages/AdminUsersScreen';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/todos/create" component={CreateTodo} />
 
         <Route path="/todos" component={UserDashboard} />
+        <Route path="/admin/users" component={AdminUsersScreen} />
       </Switch>
     </Router>
   );
