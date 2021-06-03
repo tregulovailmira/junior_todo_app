@@ -1,8 +1,11 @@
 import React from 'react';
-
-import UsersList from '../../components/UsersList';
+import UsersTable from '../../components/UsersTable';
 function AdminUsersScreen() {
-  return <UsersList />;
+  return (
+    <>
+      <UsersTable />
+    </>
+  );
 }
 
 export default AdminUsersScreen;
