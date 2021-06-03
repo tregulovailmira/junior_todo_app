@@ -33,3 +33,7 @@ export const uploadAttachmentByUser = (data: any) => {
 export const getAllUsers = () => {
   return http.get('admin/users');
 };
+
+export const deleteUser = (id: number) => {
+  return http.delete(`admin/users/${id}`);
+};

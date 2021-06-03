@@ -13,3 +13,15 @@ export const getAllUsersRequest = createAsyncThunk<User[], undefined, { rejectVa
     }
   },
 );
+
+export const deleteUserRequest = createAsyncThunk<number, number, { rejectValue: MyError }>(
+  'DELETE_USER',
+  async (id: number, { rejectWithValue }) => {
+    try {
+      await API.deleteUser(id);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  },
+);

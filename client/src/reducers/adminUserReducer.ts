@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { MyError, User } from '../interfaces';
-import { getAllUsersRequest } from '../payloadCreators/adminUsersPayload';
+import { deleteUserRequest, getAllUsersRequest } from '../payloadCreators/adminUsersPayload';
 
 interface State {
   isFetching: boolean;
@@ -30,6 +30,19 @@ const users = createSlice({
         state.error = action.payload;
       })
       .addCase(getAllUsersRequest.pending, state => {
+        state.isFetching = true;
+        state.error = null;
+      })
+      .addCase(deleteUserRequest.fulfilled, (state, action) => {
+        state.isFetching = false;
+        state.error = null;
+        state.users = state.users.filter(users => users.id !== action.payload);
+      })
+      .addCase(deleteUserRequest.rejected, (state, action) => {
+        state.isFetching = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteUserRequest.pending, state => {
         state.isFetching = true;
         state.error = null;
       });
