@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { IconButton, TableCell, TableRow } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -17,15 +17,26 @@ function UserRow(props: UserRowProps) {
   } = props;
 
   const dispatch = useAppDispatch();
+  const history = useHistory();
 
-  const deleteUser = useCallback(() => {
+  const deleteUser = useCallback(e => {
+    e.stopPropagation();
     dispatch(deleteUserRequest(id));
   }, []);
 
+  const openUserPage = useCallback(e => {
+    e.preventDefault();
+    history.push(`/users/${id}`);
+  }, []);
+
+  const stopPropagation = useCallback(e => {
+    e.stopPropagation();
+  }, []);
+
   return (
-    <TableRow hover role="checkbox" tabIndex={-1} key={id}>
+    <TableRow hover key={id} onClick={openUserPage}>
       <TableCell>
-        <Link to={`/users/${id}/edit`} style={{ color: '#757575' }}>
+        <Link to={`/users/${id}/edit`} style={{ color: '#757575' }} onClick={stopPropagation}>
           <EditIcon />
         </Link>
       </TableCell>
