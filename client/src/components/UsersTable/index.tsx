@@ -2,34 +2,10 @@ import React, { useEffect, useState, useCallback } from 'react';
 import UsersTableHeader from './UsersTableHeader';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { getAllUsersRequest } from '../../payloadCreators/adminUsersPayload';
-import { Table, TableContainer, makeStyles } from '@material-ui/core';
+import { Table, TableContainer } from '@material-ui/core';
 import UsersTableBody from './UsersTableBody';
 import Pagination from '../Pagination';
 import { DbFilters } from '../../interfaces';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-  },
-  paper: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
-  table: {
-    minWidth: 750,
-  },
-  visuallyHidden: {
-    border: 0,
-    clip: 'rect(0 0 0 0)',
-    height: 1,
-    margin: -1,
-    overflow: 'hidden',
-    padding: 0,
-    position: 'absolute',
-    top: 20,
-    width: 1,
-  },
-}));
 
 export enum ORDER_BY {
   ID = 'id',
@@ -54,7 +30,6 @@ function UsersTable() {
 
   const dispatch = useAppDispatch();
   const { users } = useAppSelector(state => state.users);
-  const classes = useStyles();
 
   useEffect(() => {
     const filters = createFilters(ORDER_BY.ID, ORDER_FOR_DB.ASC, limit, 0);
@@ -114,12 +89,7 @@ function UsersTable() {
       />
       <TableContainer>
         <Table>
-          <UsersTableHeader
-            orderBy={orderBy}
-            order={order}
-            classes={classes}
-            onRequestSort={handleRequestSort}
-          />
+          <UsersTableHeader orderBy={orderBy} order={order} onRequestSort={handleRequestSort} />
           <UsersTableBody users={users} />
         </Table>
       </TableContainer>

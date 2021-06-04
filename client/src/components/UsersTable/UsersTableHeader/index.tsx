@@ -11,7 +11,6 @@ const headCells = [
 interface HeaderProps {
   orderBy: ORDER_BY;
   order: ORDER;
-  classes: any;
   onRequestSort: (event: React.MouseEvent, property: any) => void;
 }
 function UsersTableHeader(props: HeaderProps) {

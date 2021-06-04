@@ -1,10 +1,21 @@
 import React, { useCallback, useState } from 'react';
-import { Button, MenuItem, Select } from '@material-ui/core';
+import { Box, Button, MenuItem, Select } from '@material-ui/core';
 import { DbFilters, User } from '../../interfaces';
 import { nanoid } from 'nanoid';
 import { getAllUsersRequest } from '../../payloadCreators/adminUsersPayload';
 import { useAppDispatch } from '../../app/hooks';
 import { ORDER_BY, ORDER_FOR_DB } from '../UsersTable';
+import { styled } from '@material-ui/core/styles';
+
+const PaginationContainer = styled(Box)({
+  display: 'flex',
+  justifyContent: 'space-between',
+});
+
+const ButtonContainer = styled(Box)({
+  display: 'flex',
+  gap: '10px',
+});
 
 interface PaginationProps {
   users: User[];
@@ -40,7 +51,7 @@ function Pagination(props: PaginationProps) {
   }, [page, limit]);
 
   return (
-    <>
+    <PaginationContainer>
       <Select value={limit} onChange={onChangHandle}>
         {itemsPerPage.map(item => (
           <MenuItem key={nanoid()} value={item}>
@@ -48,18 +59,20 @@ function Pagination(props: PaginationProps) {
           </MenuItem>
         ))}
       </Select>
-      <Button color="primary" variant="contained" onClick={getPrevPage} disabled={page <= 1}>
-        Prev
-      </Button>
-      <Button
-        color="primary"
-        variant="contained"
-        onClick={getNextPage}
-        disabled={users.length < limit}
-      >
-        Next
-      </Button>
-    </>
+      <ButtonContainer>
+        <Button color="primary" variant="contained" onClick={getPrevPage} disabled={page <= 1}>
+          Prev
+        </Button>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={getNextPage}
+          disabled={users.length < limit}
+        >
+          Next
+        </Button>
+      </ButtonContainer>
+    </PaginationContainer>
   );
 }
 
