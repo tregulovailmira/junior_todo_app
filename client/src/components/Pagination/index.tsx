@@ -35,8 +35,6 @@ function Pagination(props: PaginationProps) {
   }, []);
 
   const getNextPage = useCallback(() => {
-    console.log('page', page);
-
     const skip = page * limit;
     const filters = createFilters(ORDER_BY.ID, ORDER_FOR_DB.ASC, limit, skip);
     setPage(page + 1);
