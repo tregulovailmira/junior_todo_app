@@ -1,4 +1,5 @@
 import { TodoStatus } from './enums';
+import { ORDER_FOR_DB } from './components/UsersTable';
 
 export interface Todo {
   id: number;
@@ -35,4 +36,12 @@ export interface MyError {
   statusCode: number;
   error: string;
   message: string;
+}
+
+export interface DbFilters {
+  order: {
+    [key: string]: ORDER_FOR_DB;
+  };
+  take: number;
+  skip: number;
 }

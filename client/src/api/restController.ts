@@ -29,3 +29,11 @@ export const uploadAttachmentByUser = (data: any) => {
     },
   });
 };
+
+export const getAllUsers = (filters?: any) => {
+  return http.get(`admin/users?filters=${filters}`);
+};
+
+export const deleteUser = (id: number) => {
+  return http.delete(`admin/users/${id}`);
+};
