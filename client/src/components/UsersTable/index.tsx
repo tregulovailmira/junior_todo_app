@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { getAllUsersRequest } from '../../payloadCreators/adminUsersPayload';
 import { Table, TableContainer, makeStyles } from '@material-ui/core';
 import UsersTableBody from './UsersTableBody';
+import Pagination from '../Pagination';
+import { DbFilters } from '../../interfaces';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -40,6 +42,11 @@ export enum ORDER {
   DESC = 'desc',
 }
 
+export enum ORDER_FOR_DB {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
 function UsersTable() {
   const [orderBy, setOrderBy] = useState<ORDER_BY>(ORDER_BY.ID);
   const [order, setOrder] = useState<ORDER>(ORDER.ASC);
@@ -50,38 +57,61 @@ function UsersTable() {
   const classes = useStyles();
 
   useEffect(() => {
-    const filters = {
-      order: {
-        name: ORDER_BY.ID,
-        id: ORDER.ASC.toUpperCase(),
-      },
-      take: limit,
-      skip: 0,
-    };
+    const filters = createFilters(ORDER_BY.ID, ORDER_FOR_DB.ASC, limit, 0);
+
     dispatch(getAllUsersRequest(JSON.stringify(filters)));
   }, []);
 
+  useEffect(() => {
+    const filters = createFilters(ORDER_BY.ID, ORDER_FOR_DB.ASC, limit, 0);
+    dispatch(getAllUsersRequest(JSON.stringify(filters)));
+  }, [limit]);
+
   const handleRequestSort = useCallback(
     (event: React.MouseEvent, property: ORDER_BY) => {
-      const isAsc = orderBy === property && order === ORDER.ASC;
+      const isAsc: boolean = orderBy === property && order === ORDER.ASC;
+
       setOrder(isAsc ? ORDER.DESC : ORDER.ASC);
       setOrderBy(property);
-      const filters = {
-        order: {
-          name: property,
-          id: isAsc ? ORDER.DESC.toUpperCase() : ORDER.ASC.toUpperCase(),
-        },
-        take: limit,
-        skip: 0,
-      };
-      console.log(filters);
+
+      const newOrder = isAsc ? ORDER_FOR_DB.DESC : ORDER_FOR_DB.ASC;
+      const filters = createFilters(property, newOrder, limit, 0);
+
       dispatch(getAllUsersRequest(JSON.stringify(filters)));
     },
-    [order, orderBy],
+    [order, orderBy, limit],
+  );
+
+  const onLimitChange = useCallback(
+    (newLimit: number) => {
+      setLimit(newLimit);
+    },
+    [limit],
+  );
+
+  const createFilters = useCallback(
+    (orderBy: ORDER_BY, order: ORDER_FOR_DB, take: number, skip: number) => {
+      const filters: DbFilters = {
+        order: {
+          [orderBy]: order,
+        },
+        take,
+        skip,
+      };
+      return filters;
+    },
+    [limit],
   );
 
   return (
     <>
+      <Pagination
+        limit={limit}
+        users={users}
+        onLimitChange={onLimitChange}
+        itemsPerPage={[5, 10, 15]}
+        createFilters={createFilters}
+      />
       <TableContainer>
         <Table>
           <UsersTableHeader
@@ -96,4 +126,5 @@ function UsersTable() {
     </>
   );
 }
+
 export default UsersTable;
