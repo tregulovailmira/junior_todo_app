@@ -15,7 +15,7 @@ interface HeaderProps {
   onRequestSort: (event: React.MouseEvent, property: any) => void;
 }
 function UsersTableHeader(props: HeaderProps) {
-  const { orderBy, order, classes, onRequestSort } = props;
+  const { orderBy, order, onRequestSort } = props;
 
   const createSortHandler = (property: any) => (event: any) => {
     onRequestSort(event, property);
@@ -24,12 +24,13 @@ function UsersTableHeader(props: HeaderProps) {
   return (
     <TableHead>
       <TableRow>
+        <TableCell />
+        <TableCell />
         {headCells.map(headCell => (
           <TableCell
             key={headCell.id}
             padding={headCell.disablePadding ? 'none' : 'default'}
             align={headCell.numeric ? 'right' : 'left'}
-            sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -37,11 +38,6 @@ function UsersTableHeader(props: HeaderProps) {
               onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </span>
-              ) : null}
             </TableSortLabel>
           </TableCell>
         ))}
