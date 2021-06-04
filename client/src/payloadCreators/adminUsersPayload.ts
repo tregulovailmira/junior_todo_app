@@ -2,11 +2,11 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import * as API from '../api/restController';
 import { MyError, User } from '../interfaces';
 
-export const getAllUsersRequest = createAsyncThunk<User[], undefined, { rejectValue: MyError }>(
+export const getAllUsersRequest = createAsyncThunk<User[], any, { rejectValue: MyError }>(
   'GET_ALL_USERS',
   async (filters: any, { rejectWithValue }) => {
     try {
-      const { data } = await API.getAllUsers();
+      const { data } = await API.getAllUsers(filters);
       return data;
     } catch (error) {
       return rejectWithValue(error.response.data);
